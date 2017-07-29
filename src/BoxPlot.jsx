@@ -105,12 +105,17 @@ class BoxPlot extends React.Component {
     let axes = []
     let plots = []
     let padding = (max-min) / 3
-    let buffer = {left: (this.props.yTitle != "off" ? 75 : 50), top: (this.props.graphTitle != "off" ? 30 : 5), bot: (this.props.xTitle != "off" ? 50 : 25)}
+    let buffer = {
+      left: (this.props.yTitle != "off" ? 75 : 50),
+      top: (this.props.graphTitle != "off" ? 30 : 5),
+      bot: (this.props.xTitle != "off" ? 50 : 25)
+    }
     let unit = (this.props.height-buffer.bot-buffer.top) / ((max+padding) - (min-padding))
 
     axes.push(
-      <Axis key="axis" graphTitle={this.props.graphTitle} width={this.props.width} height={this.props.height} minY={min-padding}
-        maxY={max+padding} yScale={this.props.yScale} ySteps={this.props.ySteps}
+      <Axis key="axis" graphTitle={this.props.graphTitle} width={this.props.width}
+        height={this.props.height} minY={min-padding} maxY={max+padding}
+        yScale={this.props.yScale} ySteps={this.props.ySteps}
         yTitle={this.props.yTitle} showYAxisLine={this.props.showYAxisLine}
         showYLabels={this.props.showYLabels} showGrid={this.props.showGrid}
         xTitle={this.props.xTitle} showXAxisLine={this.props.showXAxisLine}
@@ -188,7 +193,6 @@ BoxPlot.defaultProps = {
   xTitle: "off",
   yTitle: "off",
   yScale: "lin",
-  ySteps: 5,
   showXAxisLine: true,
   showXLabels: true,
   showYAxisLine: true,
@@ -213,6 +217,17 @@ BoxPlot.propTypes = {
   width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   height: PropTypes.number,
   color: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
+  graphTitle: PropTypes.string,
+  xTitle: PropTypes.string,
+  yTitle: PropTypes.string,
+  yScale: PropTypes.string,
+  ySteps: PropTypes.number,
+  showXAxisLine: PropTypes.bool,
+  showXLabels: PropTypes.bool,
+  showYAxisLine: PropTypes.bool,
+  showYLabels: PropTypes.bool,
+  showGrid: PropTypes.bool,
+  axisStyle: PropTypes.object
 }
 
 export default BoxPlotResponsive
