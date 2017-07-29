@@ -21,7 +21,7 @@ class ExampleApp extends React.Component {
         {gender: "female", score: 85},
         {gender: "female", score: 94},
         {gender: "male", score: 96},
-        {gender: "male", score: 64},
+        {gender: "male", score: 66},
         {gender: "male", score: 74},
         {gender: "male", score: 77},
         {gender: "male", score: 76},
@@ -34,9 +34,15 @@ class ExampleApp extends React.Component {
     }
   }
 
+  colorMe(i, group) {
+    if (group === "male" || group === "female"){
+      return "#000000"
+    }
+  }
+
   render() {
     return(
-      <div>
+      <div style={{width: "70%"}}>
         <BoxPlot data={this.state.data} groupKey="gender" weightKey="score"/>
       </div>
     )

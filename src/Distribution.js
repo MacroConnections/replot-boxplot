@@ -1,10 +1,11 @@
 
 class Distribution {
 
-  constructor(data, weightKey, groupKey, titleKey) {
+  constructor(data, weightKey, groupKey, group) {
     this.data = []
+    this.group = group
     for (let dataPoint of data) {
-      if (groupKey && dataPoint[groupKey] === titleKey){
+      if (groupKey && dataPoint[groupKey] === group){
         this.data.push(dataPoint[weightKey])
       }
       else if (!groupKey) {
