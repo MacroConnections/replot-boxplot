@@ -45,11 +45,11 @@ class ExampleApp extends React.Component {
   render() {
     return(
       <div style={{width: "70%"}}>
-        <BoxPlot data={this.state.data} weightKey="score"/>
+        <BoxPlot data={this.state.data} weightKey="score" />
         <BoxPlot data={this.state.data} groupKey="gender" weightKey="score"/>
         <BoxPlot data={this.state.data} color={this.colorMe} groupKey="gender" weightKey="score"/>
         <BoxPlot data={this.state.data} graphTitle="A boxplot!" xTitle="An x axis!" yTitle="A y axis!" color={this.colorMe} groupKey="gender" weightKey="score"/>
-        <BoxPlot data={this.state.data} tooltip={true} graphTitle="A boxplot!" xTitle="An x axis!" yTitle="A y axis!" color={this.colorMe} groupKey="gender" weightKey="score"/>
+        <BoxPlot data={this.state.data} tooltip graphTitle="A boxplot!" xTitle="An x axis!" yTitle="A y axis!" color={this.colorMe} groupKey="gender" weightKey="score"/>
       </div>
     )
   }
