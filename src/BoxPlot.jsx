@@ -31,9 +31,25 @@ class Plot extends React.Component {
     this.q0Y1 = this.buffer+((this.max+this.padding-this.d.q1)*this.unit)
     this.q0Y2 = this.buffer+((this.max+this.padding-this.d.min)*this.unit)
     this.minY = this.buffer+((this.max+this.padding-this.d.min)*this.unit)
+    this.state = {
+      spread: false
+    }
   }
 
   render(){
+    if (!this.state.spread) {
+      return(
+        <g>
+          <line x1={-this.width/2 + this.offset} y1={this.medY}
+            x2={this.width/2 + this.offset} y2={this.medY}
+            stroke={this.color(this.index, this.d.group)}
+            strokeWidth={this.props.style.lineWidth}
+            onMouseOver={this.props.activateTooltip.bind(this, "Med", this.d.median)}
+            onMouseOut={this.props.deactivateTooltip.bind(this)}/>
+        </g>
+      )
+    }
+
     return (
       <Motion
         defaultStyle={{
@@ -112,6 +128,10 @@ class Plot extends React.Component {
         }
       </Motion>
     )
+  }
+
+  componentDidMount(){
+    setTimeout(() => {this.setState({spread: true})}, 1500)
   }
 
 }
