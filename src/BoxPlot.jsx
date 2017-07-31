@@ -81,7 +81,7 @@ class Plot extends React.Component {
               x2={this.width/4 + this.offset} y2={interpolatingStyle.maxY}
               stroke={this.color(this.index, this.d.group)}
               strokeWidth={this.props.style.lineWidth}
-              onMouseOver={this.props.activateTooltip.bind(this, "Max", this.d.max)}
+              onMouseOver={this.props.activateTooltip.bind(this, "Max", this.d.max, this.d)}
               onMouseOut={this.props.deactivateTooltip.bind(this)}/>
             <line x1={this.offset} y1={interpolatingStyle.q4Y1}
               x2={this.offset} y2={interpolatingStyle.q4Y2}
@@ -95,24 +95,24 @@ class Plot extends React.Component {
               x2={this.width/2 + this.offset} y2={interpolatingStyle.q4Y2}
               stroke={this.color(this.index, this.d.group)}
               strokeWidth={this.props.style.lineWidth}
-              onMouseOver={this.props.activateTooltip.bind(this, "Q3", this.d.q3)}
+              onMouseOver={this.props.activateTooltip.bind(this, "Q3", this.d.q3, this.d)}
               onMouseOut={this.props.deactivateTooltip.bind(this)}/>
             <circle cx={this.offset} cy={interpolatingStyle.cY} r={3}
               stroke={this.color(this.index, this.d.group)}
               fill="#f5f5f5" strokeWidth={this.props.style.lineWidth}
-              onMouseOver={this.props.activateTooltip.bind(this, "Mean", this.d.mean)}
+              onMouseOver={this.props.activateTooltip.bind(this, "Mean", this.d.mean, this.d)}
               onMouseOut={this.props.deactivateTooltip.bind(this)}/>
             <line x1={-this.width/2 + this.offset} y1={this.medY}
               x2={this.width/2 + this.offset} y2={this.medY}
               stroke={this.color(this.index, this.d.group)}
               strokeWidth={this.props.style.lineWidth}
-              onMouseOver={this.props.activateTooltip.bind(this, "Med", this.d.median)}
+              onMouseOver={this.props.activateTooltip.bind(this, "Med", this.d.median, this.d)}
               onMouseOut={this.props.deactivateTooltip.bind(this)}/>
             <line x1={-this.width/2 + this.offset} y1={interpolatingStyle.q0Y1}
               x2={this.width/2 + this.offset} y2={interpolatingStyle.q0Y1}
               stroke={this.color(this.index, this.d.group)}
               strokeWidth={this.props.style.lineWidth}
-              onMouseOver={this.props.activateTooltip.bind(this, "Q1", this.d.q1)}
+              onMouseOver={this.props.activateTooltip.bind(this, "Q1", this.d.q1, this.d)}
               onMouseOut={this.props.deactivateTooltip.bind(this)}/>
             <line x1={this.offset} y1={interpolatingStyle.q0Y1}
               x2={this.offset} y2={interpolatingStyle.q0Y2}
@@ -122,7 +122,7 @@ class Plot extends React.Component {
               x2={this.width/4 + this.offset} y2={interpolatingStyle.minY}
               stroke={this.color(this.index, this.d.group)}
               strokeWidth={this.props.style.lineWidth}
-              onMouseOver={this.props.activateTooltip.bind(this, "Min", this.d.min)}
+              onMouseOver={this.props.activateTooltip.bind(this, "Min", this.d.min, this.d)}
               onMouseOut={this.props.deactivateTooltip.bind(this)}/>
           </g>
         }
@@ -148,10 +148,10 @@ class BoxPlot extends React.Component {
     }
   }
 
-  activateTooltip(stat, value) {
+  activateTooltip(stat, value, distribution) {
     let newContents
     if (this.props.tooltipContents){
-      newContents = this.props.tooltipContents()
+      newContents = this.props.tooltipContents(stat, value, distribution)
     }
     else {
       newContents = (
@@ -206,7 +206,7 @@ class BoxPlot extends React.Component {
         showYLabels={this.props.showYLabels} showGrid={this.props.showGrid}
         xTitle={this.props.xTitle} showXAxisLine={this.props.showXAxisLine}
         showXLabels={this.props.showXLabels} labels={labels}
-        axisStyle={this.props.axisStyle} xAxisMode="strings"/>
+        axisStyle={this.props.axisStyle} xAxisMode="discrete"/>
     )
 
     let plotWidth = (this.props.width-buffer.left)/distributions.length/2
@@ -283,6 +283,7 @@ class BoxPlotResponsive extends React.Component {
 
 
 BoxPlot.defaultProps = {
+  weightKey: "weight",
   width: 400,
   height: 400,
   color: [
@@ -294,7 +295,6 @@ BoxPlot.defaultProps = {
   showYAxisLine: true,
   showYLabels: true,
   showGrid: true,
-  tooltip: false,
   graphStyle: {
     lineWidth: 2
   },
@@ -326,6 +326,7 @@ BoxPlot.propTypes = {
   showYAxisLine: PropTypes.bool,
   showYLabels: PropTypes.bool,
   showGrid: PropTypes.bool,
+  tooltip: PropTypes.bool,
   axisStyle: PropTypes.object
 }
 
