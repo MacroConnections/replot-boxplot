@@ -2,7 +2,7 @@ import React from "react"
 import PropTypes from "prop-types"
 import {Motion, spring} from "react-motion"
 import Distribution from "./Distribution.js"
-import {Resize} from "replot-core"
+import {Resize, Tooltip} from "replot-core"
 import {Axis} from "../../replot-core/src/Axis.jsx"
 
 
@@ -63,26 +63,51 @@ class Plot extends React.Component {
           <g>
             <line x1={-this.width/4 + this.offset} y1={interpolatingStyle.maxY}
               x2={this.width/4 + this.offset} y2={interpolatingStyle.maxY}
-              stroke={this.color(this.index, this.d.group)}/>
+              stroke={this.color(this.index, this.d.group)}
+              strokeWidth={this.props.style.lineWidth}
+              onMouseOver={this.props.activateTooltip.bind(this, "Max", this.d.max)}
+              onMouseOut={this.props.deactivateTooltip.bind(this)}/>
             <line x1={this.offset} y1={interpolatingStyle.q4Y1}
               x2={this.offset} y2={interpolatingStyle.q4Y2}
-              stroke={this.color(this.index, this.d.group)}/>
+              stroke={this.color(this.index, this.d.group)}
+              strokeWidth={this.props.style.lineWidth}/>
             <rect x={-this.width/2 + this.offset} y={interpolatingStyle.rectY}
               width={this.width} height={interpolatingStyle.rectHeight}
               stroke={this.color(this.index, this.d.group)}
-              fill="#f5f5f5"/>
+              fill="#f5f5f5" strokeWidth={this.props.style.lineWidth}/>
+            <line x1={-this.width/2 + this.offset} y1={interpolatingStyle.q4Y2}
+              x2={this.width/2 + this.offset} y2={interpolatingStyle.q4Y2}
+              stroke={this.color(this.index, this.d.group)}
+              strokeWidth={this.props.style.lineWidth}
+              onMouseOver={this.props.activateTooltip.bind(this, "Q3", this.d.q3)}
+              onMouseOut={this.props.deactivateTooltip.bind(this)}/>
             <circle cx={this.offset} cy={interpolatingStyle.cY} r={3}
               stroke={this.color(this.index, this.d.group)}
-              fill="#f5f5f5"/>
+              fill="#f5f5f5" strokeWidth={this.props.style.lineWidth}
+              onMouseOver={this.props.activateTooltip.bind(this, "Mean", this.d.mean)}
+              onMouseOut={this.props.deactivateTooltip.bind(this)}/>
             <line x1={-this.width/2 + this.offset} y1={this.medY}
               x2={this.width/2 + this.offset} y2={this.medY}
-              stroke={this.color(this.index, this.d.group)}/>
+              stroke={this.color(this.index, this.d.group)}
+              strokeWidth={this.props.style.lineWidth}
+              onMouseOver={this.props.activateTooltip.bind(this, "Med", this.d.median)}
+              onMouseOut={this.props.deactivateTooltip.bind(this)}/>
+            <line x1={-this.width/2 + this.offset} y1={interpolatingStyle.q0Y1}
+              x2={this.width/2 + this.offset} y2={interpolatingStyle.q0Y1}
+              stroke={this.color(this.index, this.d.group)}
+              strokeWidth={this.props.style.lineWidth}
+              onMouseOver={this.props.activateTooltip.bind(this, "Q1", this.d.q1)}
+              onMouseOut={this.props.deactivateTooltip.bind(this)}/>
             <line x1={this.offset} y1={interpolatingStyle.q0Y1}
               x2={this.offset} y2={interpolatingStyle.q0Y2}
-              stroke={this.color(this.index, this.d.group)}/>
+              stroke={this.color(this.index, this.d.group)}
+              strokeWidth={this.props.style.lineWidth}/>
             <line x1={-this.width/4 + this.offset} y1={interpolatingStyle.minY}
               x2={this.width/4 + this.offset} y2={interpolatingStyle.minY}
-              stroke={this.color(this.index, this.d.group)}/>
+              stroke={this.color(this.index, this.d.group)}
+              strokeWidth={this.props.style.lineWidth}
+              onMouseOver={this.props.activateTooltip.bind(this, "Min", this.d.min)}
+              onMouseOut={this.props.deactivateTooltip.bind(this)}/>
           </g>
         }
       </Motion>
@@ -92,6 +117,47 @@ class Plot extends React.Component {
 }
 
 class BoxPlot extends React.Component {
+
+  constructor(){
+    super()
+    this.state = {
+      tooltipContents: null,
+      mouseOver: false,
+      mouseX: null,
+      mouseY: null
+    }
+  }
+
+  activateTooltip(stat, value) {
+    let newContents
+    if (this.props.tooltipContents){
+      newContents = this.props.tooltipContents()
+    }
+    else {
+      newContents = (
+        <div>
+          <h4>{stat}: {value}</h4>
+        </div>
+      )
+    }
+    this.setState({
+      tooltipContents: newContents,
+      mouseOver: true,
+    })
+  }
+
+  deactivateTooltip() {
+    this.setState({
+      mouseOver: false
+    })
+  }
+
+  updateMousePos(e) {
+    this.setState({
+      mouseX: e.pageX + 8,
+      mouseY: e.pageY
+    })
+  }
 
   colorPlot(i, group) {
     if (this.props.color instanceof Array) {
@@ -106,17 +172,17 @@ class BoxPlot extends React.Component {
     let plots = []
     let padding = (max-min) / 3
     let buffer = {
-      left: (this.props.yTitle != "off" ? 75 : 50),
-      top: (this.props.graphTitle != "off" ? 30 : 5),
-      bot: (this.props.xTitle != "off" ? 50 : 25)
+      left: (this.props.yTitle ? 75 : 50),
+      top: (this.props.graphTitle ? 30 : 5),
+      bot: (this.props.xTitle ? 50 : 25)
     }
     let unit = (this.props.height-buffer.bot-buffer.top) / ((max+padding) - (min-padding))
 
     axes.push(
       <Axis key="axis" graphTitle={this.props.graphTitle} width={this.props.width}
         height={this.props.height} minY={min-padding} maxY={max+padding}
-        yScale={this.props.yScale} ySteps={this.props.ySteps}
-        yTitle={this.props.yTitle} showYAxisLine={this.props.showYAxisLine}
+        ySteps={this.props.ySteps} yTitle={this.props.yTitle}
+        showYAxisLine={this.props.showYAxisLine}
         showYLabels={this.props.showYLabels} showGrid={this.props.showGrid}
         xTitle={this.props.xTitle} showXAxisLine={this.props.showXAxisLine}
         showXLabels={this.props.showXLabels} labels={labels}
@@ -130,7 +196,10 @@ class BoxPlot extends React.Component {
           medY={buffer.top+((max+padding-distributions[i].median)*unit)}
           offset={buffer.left + (this.props.width-buffer.left)/distributions.length/2 + i*((this.props.width-buffer.left)/distributions.length)}
           buffer={buffer.top} max={max} min={min} unit={unit}
-          padding={padding} index={i} color={this.colorPlot.bind(this)} />
+          padding={padding} index={i} color={this.colorPlot.bind(this)}
+          style={this.props.graphStyle}
+          activateTooltip={this.activateTooltip.bind(this)}
+          deactivateTooltip={this.deactivateTooltip.bind(this)}/>
       )
     }
 
@@ -163,9 +232,20 @@ class BoxPlot extends React.Component {
     let series = this.draw(distributions, min, max, unique)
 
     return (
-      <svg width={this.props.width} height={this.props.height}>
-        {series}
-      </svg>
+      <div onMouseMove={this.props.tooltip ? this.updateMousePos.bind(this) : null}>
+        {this.props.tooltip &&
+          <Tooltip
+            x={this.state.mouseX} y={this.state.mouseY}
+            align="right"
+            active={this.state.mouseOver}
+            contents={this.state.tooltipContents}
+            colorScheme={this.props.tooltipColor}
+          />
+        }
+        <svg width={this.props.width} height={this.props.height}>
+          {series}
+        </svg>
+      </div>
     )
   }
 }
@@ -189,15 +269,15 @@ BoxPlot.defaultProps = {
     "#fea9ac", "#fc858f", "#f46b72", "#de836e",
     "#caa56f", "#adcc6f", "#8ebc57", "#799b3f"
   ],
-  graphTitle: "off",
-  xTitle: "off",
-  yTitle: "off",
-  yScale: "lin",
   showXAxisLine: true,
   showXLabels: true,
   showYAxisLine: true,
   showYLabels: true,
   showGrid: true,
+  tooltip: false,
+  graphStyle: {
+    lineWidth: 2
+  },
   axisStyle: {
     axisColor: "#000000",
     labelColor: "#000000",
@@ -220,7 +300,6 @@ BoxPlot.propTypes = {
   graphTitle: PropTypes.string,
   xTitle: PropTypes.string,
   yTitle: PropTypes.string,
-  yScale: PropTypes.string,
   ySteps: PropTypes.number,
   showXAxisLine: PropTypes.bool,
   showXLabels: PropTypes.bool,
