@@ -10,119 +10,134 @@ class Plot extends React.Component {
 
   constructor(props){
     super(props)
-    this.d = this.props.distribution
-    this.offset = this.props.offset
-    this.buffer = this.props.buffer
-    this.padding = this.props.padding
-    this.unit = this.props.unit
-    this.width = this.props.width
-    this.max = this.props.max
-    this.min = this.props.min
-    this.medY = this.props.medY
-    this.index = this.props.index
-    this.color = this.props.color.bind(this)
-    //begin calculated attributes
-    this.maxY = this.buffer+((this.max+this.padding-this.d.max)*this.unit)
-    this.q4Y1 = this.buffer+((this.max+this.padding-this.d.max)*this.unit)
-    this.q4Y2 = this.buffer+((this.max+this.padding-this.d.q3)*this.unit)
-    this.rectY = this.buffer+((this.max+this.padding-this.d.q3)*this.unit)
-    this.rectHeight = ((this.max+this.padding-this.d.q1)*this.unit)-((this.max+this.padding-this.d.q3)*this.unit)
-    this.cY = this.buffer+((this.max+this.padding-this.d.mean)*this.unit)
-    this.q0Y1 = this.buffer+((this.max+this.padding-this.d.q1)*this.unit)
-    this.q0Y2 = this.buffer+((this.max+this.padding-this.d.min)*this.unit)
-    this.minY = this.buffer+((this.max+this.padding-this.d.min)*this.unit)
     this.state = {
-      spread: false
+      spread: (this.props.initialAnimation ? false : true)
     }
   }
 
+  calculatePositions(){
+    let positions = {}
+    positions.maxY = this.props.buffer+((this.props.max+this.props.padding-this.props.distribution.max)*this.props.unit)
+    positions.q4Y1 = this.props.buffer+((this.props.max+this.props.padding-this.props.distribution.max)*this.props.unit)
+    positions.q4Y2 = this.props.buffer+((this.props.max+this.props.padding-this.props.distribution.q3)*this.props.unit)
+    positions.rectY = this.props.buffer+((this.props.max+this.props.padding-this.props.distribution.q3)*this.props.unit)
+    positions.rectHeight = ((this.props.max+this.props.padding-this.props.distribution.q1)*this.props.unit)-((this.props.max+this.props.padding-this.props.distribution.q3)*this.props.unit)
+    positions.medY = this.props.buffer+((this.props.max+this.props.padding-this.props.distribution.median)*this.props.unit)
+    positions.cY = this.props.buffer+((this.props.max+this.props.padding-this.props.distribution.mean)*this.props.unit)
+    positions.q0Y1 = this.props.buffer+((this.props.max+this.props.padding-this.props.distribution.q1)*this.props.unit)
+    positions.q0Y2 = this.props.buffer+((this.props.max+this.props.padding-this.props.distribution.min)*this.props.unit)
+    positions.minY = this.props.buffer+((this.props.max+this.props.padding-this.props.distribution.min)*this.props.unit)
+    return positions
+  }
+
   render(){
+    let positions = this.calculatePositions()
+
     if (!this.state.spread) {
       return(
         <g>
-          <line x1={-this.width/2 + this.offset} y1={this.medY}
-            x2={this.width/2 + this.offset} y2={this.medY}
-            stroke={this.color(this.index, this.d.group)}
+          <line x1={-this.props.width/2 + this.props.offset} y1={positions.medY}
+            x2={this.props.width/2 + this.props.offset} y2={positions.medY}
+            stroke={this.props.color(this.props.index, this.props.distribution.group)}
             strokeWidth={this.props.style.lineWidth}
-            onMouseOver={this.props.activateTooltip.bind(this, "Med", this.d.median)}
+            onMouseOver={this.props.activateTooltip.bind(this, "Med", this.props.distribution.median)}
             onMouseOut={this.props.deactivateTooltip.bind(this)}/>
         </g>
       )
     }
 
+    let initialStyle = {
+      maxY: positions.maxY,
+      q4Y1: positions.q4Y1,
+      q4Y2: positions.q4Y2,
+      rectY: positions.rectY,
+      rectHeight: positions.rectHeight,
+      medY: positions.medY,
+      cY: positions.cY,
+      q0Y1: positions.q0Y1,
+      q0Y2: positions.q0Y2,
+      minY: positions.minY,
+    }
+
+    if (this.props.initialAnimation){
+      initialStyle = {
+        maxY: positions.medY,
+        q4Y1: positions.medY,
+        q4Y2: positions.medY,
+        rectY: positions.medY,
+        rectHeight: 0,
+        medY: positions.medY,
+        cY: positions.medY,
+        q0Y1: positions.medY,
+        q0Y2: positions.medY,
+        minY: positions.medY
+      }
+    }
+
     return (
       <Motion
-        defaultStyle={{
-          maxY: this.medY,
-          q4Y1: this.medY,
-          q4Y2: this.medY,
-          rectY: this.medY,
-          rectHeight: 0,
-          cY: this.medY,
-          q0Y1: this.medY,
-          q0Y2: this.medY,
-          minY: this.medY
-        }}
+        defaultStyle={initialStyle}
         style={{
-          maxY: spring(this.maxY, {stiffness: 40, damping: 10}),
-          q4Y1: spring(this.q4Y1, {stiffness: 40, damping: 10}),
-          q4Y2: spring(this.q4Y2, {stiffness: 40, damping: 10}),
-          rectY: spring(this.rectY, {stiffness: 40, damping: 10}),
-          rectHeight: spring(this.rectHeight, {stiffness: 40, damping: 10}),
-          cY: spring(this.cY, {stiffness: 40, damping: 10}),
-          q0Y1: spring(this.q0Y1, {stiffness: 40, damping: 10}),
-          q0Y2: spring(this.q0Y2, {stiffness: 40, damping: 10}),
-          minY: spring(this.minY, {stiffness: 40, damping: 10}),
+          maxY: spring(positions.maxY, {stiffness: 50, damping: 12}),
+          q4Y1: spring(positions.q4Y1, {stiffness: 50, damping: 12}),
+          q4Y2: spring(positions.q4Y2, {stiffness: 50, damping: 12}),
+          rectY: spring(positions.rectY, {stiffness: 50, damping: 12}),
+          rectHeight: spring(positions.rectHeight, {stiffness: 50, damping: 12}),
+          medY: spring(positions.medY, {stiffness: 50, damping: 12}),
+          cY: spring(positions.cY, {stiffness: 50, damping: 12}),
+          q0Y1: spring(positions.q0Y1, {stiffness: 50, damping: 12}),
+          q0Y2: spring(positions.q0Y2, {stiffness: 50, damping: 12}),
+          minY: spring(positions.minY, {stiffness: 50, damping: 12}),
         }}
       >
         {(interpolatingStyle) =>
           <g>
-            <line x1={-this.width/4 + this.offset} y1={interpolatingStyle.maxY}
-              x2={this.width/4 + this.offset} y2={interpolatingStyle.maxY}
-              stroke={this.color(this.index, this.d.group)}
+            <line x1={-this.props.width/4 + this.props.offset} y1={interpolatingStyle.maxY}
+              x2={this.props.width/4 + this.props.offset} y2={interpolatingStyle.maxY}
+              stroke={this.props.color(this.props.index, this.props.distribution.group)}
               strokeWidth={this.props.style.lineWidth}
-              onMouseOver={this.props.activateTooltip.bind(this, "Max", this.d.max, this.d)}
+              onMouseOver={this.props.activateTooltip.bind(this, "Max", this.props.distribution.max, this.props.distribution)}
               onMouseOut={this.props.deactivateTooltip.bind(this)}/>
-            <line x1={this.offset} y1={interpolatingStyle.q4Y1}
-              x2={this.offset} y2={interpolatingStyle.q4Y2}
-              stroke={this.color(this.index, this.d.group)}
+            <line x1={this.props.offset} y1={interpolatingStyle.q4Y1}
+              x2={this.props.offset} y2={interpolatingStyle.q4Y2}
+              stroke={this.props.color(this.props.index, this.props.distribution.group)}
               strokeWidth={this.props.style.lineWidth}/>
-            <rect x={-this.width/2 + this.offset} y={interpolatingStyle.rectY}
-              width={this.width} height={interpolatingStyle.rectHeight}
-              stroke={this.color(this.index, this.d.group)}
+            <rect x={-this.props.width/2 + this.props.offset} y={interpolatingStyle.rectY}
+              width={this.props.width} height={interpolatingStyle.rectHeight}
+              stroke={this.props.color(this.props.index, this.props.distribution.group)}
               fill="#f5f5f5" strokeWidth={this.props.style.lineWidth}/>
-            <line x1={-this.width/2 + this.offset} y1={interpolatingStyle.q4Y2}
-              x2={this.width/2 + this.offset} y2={interpolatingStyle.q4Y2}
-              stroke={this.color(this.index, this.d.group)}
+            <line x1={-this.props.width/2 + this.props.offset} y1={interpolatingStyle.q4Y2}
+              x2={this.props.width/2 + this.props.offset} y2={interpolatingStyle.q4Y2}
+              stroke={this.props.color(this.props.index, this.props.distribution.group)}
               strokeWidth={this.props.style.lineWidth}
-              onMouseOver={this.props.activateTooltip.bind(this, "Q3", this.d.q3, this.d)}
+              onMouseOver={this.props.activateTooltip.bind(this, "Q3", this.props.distribution.q3, this.props.distribution)}
               onMouseOut={this.props.deactivateTooltip.bind(this)}/>
-            <circle cx={this.offset} cy={interpolatingStyle.cY} r={3}
-              stroke={this.color(this.index, this.d.group)}
+            <circle cx={this.props.offset} cy={interpolatingStyle.cY} r={3}
+              stroke={this.props.color(this.props.index, this.props.distribution.group)}
               fill="#f5f5f5" strokeWidth={this.props.style.lineWidth}
-              onMouseOver={this.props.activateTooltip.bind(this, "Mean", this.d.mean, this.d)}
+              onMouseOver={this.props.activateTooltip.bind(this, "Mean", this.props.distribution.mean, this.props.distribution)}
               onMouseOut={this.props.deactivateTooltip.bind(this)}/>
-            <line x1={-this.width/2 + this.offset} y1={this.medY}
-              x2={this.width/2 + this.offset} y2={this.medY}
-              stroke={this.color(this.index, this.d.group)}
+            <line x1={-this.props.width/2 + this.props.offset} y1={interpolatingStyle.medY}
+              x2={this.props.width/2 + this.props.offset} y2={interpolatingStyle.medY}
+              stroke={this.props.color(this.props.index, this.props.distribution.group)}
               strokeWidth={this.props.style.lineWidth}
-              onMouseOver={this.props.activateTooltip.bind(this, "Med", this.d.median, this.d)}
+              onMouseOver={this.props.activateTooltip.bind(this, "Med", this.props.distribution.median, this.props.distribution)}
               onMouseOut={this.props.deactivateTooltip.bind(this)}/>
-            <line x1={-this.width/2 + this.offset} y1={interpolatingStyle.q0Y1}
-              x2={this.width/2 + this.offset} y2={interpolatingStyle.q0Y1}
-              stroke={this.color(this.index, this.d.group)}
+            <line x1={-this.props.width/2 + this.props.offset} y1={interpolatingStyle.q0Y1}
+              x2={this.props.width/2 + this.props.offset} y2={interpolatingStyle.q0Y1}
+              stroke={this.props.color(this.props.index, this.props.distribution.group)}
               strokeWidth={this.props.style.lineWidth}
-              onMouseOver={this.props.activateTooltip.bind(this, "Q1", this.d.q1, this.d)}
+              onMouseOver={this.props.activateTooltip.bind(this, "Q1", this.props.distribution.q1, this.props.distribution)}
               onMouseOut={this.props.deactivateTooltip.bind(this)}/>
-            <line x1={this.offset} y1={interpolatingStyle.q0Y1}
-              x2={this.offset} y2={interpolatingStyle.q0Y2}
-              stroke={this.color(this.index, this.d.group)}
+            <line x1={this.props.offset} y1={interpolatingStyle.q0Y1}
+              x2={this.props.offset} y2={interpolatingStyle.q0Y2}
+              stroke={this.props.color(this.props.index, this.props.distribution.group)}
               strokeWidth={this.props.style.lineWidth}/>
-            <line x1={-this.width/4 + this.offset} y1={interpolatingStyle.minY}
-              x2={this.width/4 + this.offset} y2={interpolatingStyle.minY}
-              stroke={this.color(this.index, this.d.group)}
+            <line x1={-this.props.width/4 + this.props.offset} y1={interpolatingStyle.minY}
+              x2={this.props.width/4 + this.props.offset} y2={interpolatingStyle.minY}
+              stroke={this.props.color(this.props.index, this.props.distribution.group)}
               strokeWidth={this.props.style.lineWidth}
-              onMouseOver={this.props.activateTooltip.bind(this, "Min", this.d.min, this.d)}
+              onMouseOver={this.props.activateTooltip.bind(this, "Min", this.props.distribution.min, this.props.distribution)}
               onMouseOut={this.props.deactivateTooltip.bind(this)}/>
           </g>
         }
@@ -206,18 +221,18 @@ class BoxPlot extends React.Component {
         showYLabels={this.props.showYLabels} showGrid={this.props.showGrid}
         xTitle={this.props.xTitle} showXAxisLine={this.props.showXAxisLine}
         showXLabels={this.props.showXLabels} labels={labels}
-        axisStyle={this.props.axisStyle} xAxisMode="discrete"/>
+        axisStyle={this.props.axisStyle} xAxisMode="discrete" />
     )
 
     let plotWidth = (this.props.width-buffer.left)/distributions.length/2
     for (let i = 0; i < distributions.length; i++){
       plots.push(
         <Plot key={"plot"+i} distribution={distributions[i]} width={plotWidth}
-          medY={buffer.top+((max+padding-distributions[i].median)*unit)}
           offset={buffer.left + (this.props.width-buffer.left)/distributions.length/2 + i*((this.props.width-buffer.left)/distributions.length)}
           buffer={buffer.top} max={max} min={min} unit={unit}
           padding={padding} index={i} color={this.colorPlot.bind(this)}
           style={this.props.graphStyle}
+          initialAnimation={this.props.initialAnimation}
           activateTooltip={this.activateTooltip.bind(this)}
           deactivateTooltip={this.deactivateTooltip.bind(this)}/>
       )
@@ -295,8 +310,9 @@ BoxPlot.defaultProps = {
   showYAxisLine: true,
   showYLabels: true,
   showGrid: true,
+  initialAnimation: true,
   graphStyle: {
-    lineWidth: 2
+    lineWidth: 3
   },
   axisStyle: {
     axisColor: "#000000",
