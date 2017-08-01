@@ -342,7 +342,9 @@ BoxPlot.propTypes = {
   showYAxisLine: PropTypes.bool,
   showYLabels: PropTypes.bool,
   showGrid: PropTypes.bool,
+  initialAnimation: PropTypes.bool,
   tooltip: PropTypes.bool,
+  graphStyle: PropTypes.object,
   axisStyle: PropTypes.object
 }
 
