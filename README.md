@@ -77,6 +77,9 @@ render() {
 Dimensions may be specified by passing in `width` and `height` props. The
 unit is pixels, and the BoxPlot defaults to 400 by 400 pixels.
 
+The BoxPlot will not function with a width that is less than 50 pixels, or with
+a height that is less than 30 pixels.
+
 ### Colors
 Colors may be specified through 2 different mechanisms, both through a `color` prop.
 If none of the mechanisms are specified, BoxPlot defaults to a built in
