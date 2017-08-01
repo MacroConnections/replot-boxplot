@@ -223,3 +223,9 @@ render() {
     <BoxPlot data={boxData} axisStyle={style}/>
   )
 }
+```
+
+### Initial Animation
+Initial animation is enabled by default, resulting in the boxplot growing out
+from the median of a distribution. This can be disabled using the
+`initialAnimation` prop, passing in a value of false.
