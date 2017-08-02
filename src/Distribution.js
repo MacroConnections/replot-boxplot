@@ -46,6 +46,14 @@ class Distribution {
     this.median = quartiles.med
     this.q3 = quartiles.q3
     this.mean = this.getMean(this.data)
+    this.summary = {
+      max: this.max,
+      q3: this.q3,
+      median: this.median,
+      mean: this.mean,
+      q1: this.q1,
+      min: this.min
+    }
   }
 }
 

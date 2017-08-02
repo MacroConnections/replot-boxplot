@@ -132,14 +132,17 @@ render() {
 
 #### Customizing Tooltip contents
 By default, the tooltip will display the the five-number summary of a distribution
-at the corresponding points. The user can customize exactly what is displayed inside the tooltip by passing in a `tooltipContents` prop in the form of a Javascript function.
-The user can expect to receive the name of the stat they are hovering over
-(e.g. "Max", "Med"), the value of the respective stat, as well as the entire distribution. The function should return JSX, which can utilize some or all of the provided values.
+when hovering over the respective plot. The user can customize exactly what is
+displayed inside the tooltip by passing in a `tooltipContents` prop in the form
+of a Javascript function. The user can expect to receive the entire distribution
+as an array, as well as the five (+1) number summary as an object, with keys of
+`max`, `q3`, `median`, `mean`, `q1`, `min`. The function should return JSX, which can
+utilize some or all of the provided values.
 
 ```javascript
-fillTooltip(statName, value, distribution){
+fillTooltip(distribution, summary){
   return (
-    <div>You are hovering on the stat: {statName}</div>
+    <div>The distribution that makes up this boxplot is {distribution.toString()}</div>
   )
 }
 
