@@ -879,7 +879,7 @@ var Plot = function (_React$Component) {
             x2: this.props.width / 2 + this.props.offset, y2: positions.medY,
             stroke: this.props.color(this.props.index, this.props.distribution.group),
             strokeWidth: this.props.style.lineWidth,
-            onMouseOver: this.props.activateTooltip.bind(this, this.props.distribution),
+            onMouseOver: this.props.activateTooltip.bind(this, this.props.distribution.data, this.props.distribution.summary),
             onMouseOut: this.props.deactivateTooltip.bind(this) })
         );
       }
@@ -932,7 +932,7 @@ var Plot = function (_React$Component) {
         function (interpolatingStyle) {
           return _react2.default.createElement(
             "g",
-            { onMouseOver: _this2.props.activateTooltip.bind(_this2, _this2.props.distribution),
+            { onMouseOver: _this2.props.activateTooltip.bind(_this2, _this2.props.distribution.data, _this2.props.distribution.summary),
               onMouseOut: _this2.props.deactivateTooltip.bind(_this2) },
             _react2.default.createElement("line", { x1: -_this2.props.width / 4 + _this2.props.offset, y1: interpolatingStyle.maxY,
               x2: _this2.props.width / 4 + _this2.props.offset, y2: interpolatingStyle.maxY,
@@ -1039,10 +1039,10 @@ var BoxPlot = function (_React$Component3) {
 
   _createClass(BoxPlot, [{
     key: "activateTooltip",
-    value: function activateTooltip(distribution) {
+    value: function activateTooltip(distribution, summary) {
       var newContents = void 0;
       if (this.props.tooltipContents) {
-        newContents = this.props.tooltipContents(distribution);
+        newContents = this.props.tooltipContents(distribution, summary);
       } else {
         newContents = _react2.default.createElement(
           "div",
@@ -1051,42 +1051,42 @@ var BoxPlot = function (_React$Component3) {
             "span",
             null,
             "Max: ",
-            distribution.max
+            summary.max
           ),
           _react2.default.createElement("br", null),
           _react2.default.createElement(
             "span",
             null,
             "Q3: ",
-            distribution.q3
+            summary.q3
           ),
           _react2.default.createElement("br", null),
           _react2.default.createElement(
             "span",
             null,
             "Median: ",
-            distribution.median
+            summary.median
           ),
           _react2.default.createElement("br", null),
           _react2.default.createElement(
             "span",
             null,
             "Mean: ",
-            distribution.mean
+            summary.mean
           ),
           _react2.default.createElement("br", null),
           _react2.default.createElement(
             "span",
             null,
             "Q1: ",
-            distribution.q1
+            summary.q1
           ),
           _react2.default.createElement("br", null),
           _react2.default.createElement(
             "span",
             null,
             "Min: ",
-            distribution.min
+            summary.min
           ),
           _react2.default.createElement("br", null)
         );
@@ -3378,6 +3378,14 @@ class Distribution {
     this.median = quartiles.med
     this.q3 = quartiles.q3
     this.mean = this.getMean(this.data)
+    this.summary = {
+      max: this.max,
+      q3: this.q3,
+      median: this.median,
+      mean: this.mean,
+      q1: this.q1,
+      min: this.min
+    }
   }
 }
 
