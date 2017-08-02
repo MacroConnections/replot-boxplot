@@ -39,7 +39,7 @@ class Plot extends React.Component {
             x2={this.props.width/2 + this.props.offset} y2={positions.medY}
             stroke={this.props.color(this.props.index, this.props.distribution.group)}
             strokeWidth={this.props.style.lineWidth}
-            onMouseOver={this.props.activateTooltip.bind(this, this.props.distribution)}
+            onMouseOver={this.props.activateTooltip.bind(this, this.props.distribution.data, this.props.distribution.summary)}
             onMouseOut={this.props.deactivateTooltip.bind(this)}/>
         </g>
       )
@@ -90,7 +90,7 @@ class Plot extends React.Component {
         }}
       >
         {(interpolatingStyle) =>
-          <g onMouseOver={this.props.activateTooltip.bind(this, this.props.distribution)}
+          <g onMouseOver={this.props.activateTooltip.bind(this, this.props.distribution.data, this.props.distribution.summary)}
             onMouseOut={this.props.deactivateTooltip.bind(this)}>
             <line x1={-this.props.width/4 + this.props.offset} y1={interpolatingStyle.maxY}
               x2={this.props.width/4 + this.props.offset} y2={interpolatingStyle.maxY}
@@ -174,20 +174,20 @@ class BoxPlot extends React.Component {
     }
   }
 
-  activateTooltip(distribution) {
+  activateTooltip(distribution, summary) {
     let newContents
     if (this.props.tooltipContents){
-      newContents = this.props.tooltipContents(distribution)
+      newContents = this.props.tooltipContents(distribution, summary)
     }
     else {
       newContents = (
         <div>
-          <span>Max: {distribution.max}</span><br/>
-          <span>Q3: {distribution.q3}</span><br/>
-          <span>Median: {distribution.median}</span><br/>
-          <span>Mean: {distribution.mean}</span><br/>
-          <span>Q1: {distribution.q1}</span><br/>
-          <span>Min: {distribution.min}</span><br/>
+          <span>Max: {summary.max}</span><br/>
+          <span>Q3: {summary.q3}</span><br/>
+          <span>Median: {summary.median}</span><br/>
+          <span>Mean: {summary.mean}</span><br/>
+          <span>Q1: {summary.q1}</span><br/>
+          <span>Min: {summary.min}</span><br/>
         </div>
       )
     }
