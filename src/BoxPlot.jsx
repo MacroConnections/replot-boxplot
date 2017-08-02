@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 import {Motion, spring} from "react-motion"
 import Distribution from "./Distribution.js"
 import {Resize, Tooltip} from "replot-core"
-import {Axis} from "../../replot-core/src/Axis.jsx"
+import Axis from "../../replot-core/src/Axis.jsx"
 
 
 class Plot extends React.Component {
@@ -40,7 +40,7 @@ class Plot extends React.Component {
             x2={this.props.width/2 + this.props.offset} y2={positions.medY}
             stroke={this.props.color(this.props.index, this.props.distribution.group)}
             strokeWidth={this.props.style.lineWidth}
-            onMouseOver={this.props.activateTooltip.bind(this, "Med", this.props.distribution.median)}
+            onMouseOver={this.props.activateTooltip.bind(this, this.props.distribution)}
             onMouseOut={this.props.deactivateTooltip.bind(this)}/>
         </g>
       )
@@ -91,13 +91,12 @@ class Plot extends React.Component {
         }}
       >
         {(interpolatingStyle) =>
-          <g>
+          <g onMouseOver={this.props.activateTooltip.bind(this, this.props.distribution)}
+            onMouseOut={this.props.deactivateTooltip.bind(this)}>
             <line x1={-this.props.width/4 + this.props.offset} y1={interpolatingStyle.maxY}
               x2={this.props.width/4 + this.props.offset} y2={interpolatingStyle.maxY}
               stroke={this.props.color(this.props.index, this.props.distribution.group)}
-              strokeWidth={this.props.style.lineWidth}
-              onMouseOver={this.props.activateTooltip.bind(this, "Max", this.props.distribution.max, this.props.distribution)}
-              onMouseOut={this.props.deactivateTooltip.bind(this)}/>
+              strokeWidth={this.props.style.lineWidth} />
             <line x1={this.props.offset} y1={interpolatingStyle.q4Y1}
               x2={this.props.offset} y2={interpolatingStyle.q4Y2}
               stroke={this.props.color(this.props.index, this.props.distribution.group)}
@@ -106,29 +105,13 @@ class Plot extends React.Component {
               width={this.props.width} height={interpolatingStyle.rectHeight}
               stroke={this.props.color(this.props.index, this.props.distribution.group)}
               fill="#f5f5f5" strokeWidth={this.props.style.lineWidth}/>
-            <line x1={-this.props.width/2 + this.props.offset} y1={interpolatingStyle.q4Y2}
-              x2={this.props.width/2 + this.props.offset} y2={interpolatingStyle.q4Y2}
-              stroke={this.props.color(this.props.index, this.props.distribution.group)}
-              strokeWidth={this.props.style.lineWidth}
-              onMouseOver={this.props.activateTooltip.bind(this, "Q3", this.props.distribution.q3, this.props.distribution)}
-              onMouseOut={this.props.deactivateTooltip.bind(this)}/>
             <circle cx={this.props.offset} cy={interpolatingStyle.cY} r={3}
               stroke={this.props.color(this.props.index, this.props.distribution.group)}
-              fill="#f5f5f5" strokeWidth={this.props.style.lineWidth}
-              onMouseOver={this.props.activateTooltip.bind(this, "Mean", this.props.distribution.mean, this.props.distribution)}
-              onMouseOut={this.props.deactivateTooltip.bind(this)}/>
+              fill="#f5f5f5" strokeWidth={this.props.style.lineWidth} />
             <line x1={-this.props.width/2 + this.props.offset} y1={interpolatingStyle.medY}
               x2={this.props.width/2 + this.props.offset} y2={interpolatingStyle.medY}
               stroke={this.props.color(this.props.index, this.props.distribution.group)}
-              strokeWidth={this.props.style.lineWidth}
-              onMouseOver={this.props.activateTooltip.bind(this, "Med", this.props.distribution.median, this.props.distribution)}
-              onMouseOut={this.props.deactivateTooltip.bind(this)}/>
-            <line x1={-this.props.width/2 + this.props.offset} y1={interpolatingStyle.q0Y1}
-              x2={this.props.width/2 + this.props.offset} y2={interpolatingStyle.q0Y1}
-              stroke={this.props.color(this.props.index, this.props.distribution.group)}
-              strokeWidth={this.props.style.lineWidth}
-              onMouseOver={this.props.activateTooltip.bind(this, "Q1", this.props.distribution.q1, this.props.distribution)}
-              onMouseOut={this.props.deactivateTooltip.bind(this)}/>
+              strokeWidth={this.props.style.lineWidth} />
             <line x1={this.props.offset} y1={interpolatingStyle.q0Y1}
               x2={this.props.offset} y2={interpolatingStyle.q0Y2}
               stroke={this.props.color(this.props.index, this.props.distribution.group)}
@@ -136,9 +119,7 @@ class Plot extends React.Component {
             <line x1={-this.props.width/4 + this.props.offset} y1={interpolatingStyle.minY}
               x2={this.props.width/4 + this.props.offset} y2={interpolatingStyle.minY}
               stroke={this.props.color(this.props.index, this.props.distribution.group)}
-              strokeWidth={this.props.style.lineWidth}
-              onMouseOver={this.props.activateTooltip.bind(this, "Min", this.props.distribution.min, this.props.distribution)}
-              onMouseOut={this.props.deactivateTooltip.bind(this)}/>
+              strokeWidth={this.props.style.lineWidth} />
           </g>
         }
       </Motion>
@@ -163,15 +144,20 @@ class BoxPlot extends React.Component {
     }
   }
 
-  activateTooltip(stat, value, distribution) {
+  activateTooltip(distribution) {
     let newContents
     if (this.props.tooltipContents){
-      newContents = this.props.tooltipContents(stat, value, distribution)
+      newContents = this.props.tooltipContents(distribution)
     }
     else {
       newContents = (
         <div>
-          <h4>{stat}: {value}</h4>
+          <span>Max: {distribution.max}</span><br/>
+          <span>Q3: {distribution.q3}</span><br/>
+          <span>Median: {distribution.median}</span><br/>
+          <span>Mean: {distribution.mean}</span><br/>
+          <span>Q1: {distribution.q1}</span><br/>
+          <span>Min: {distribution.min}</span><br/>
         </div>
       )
     }
