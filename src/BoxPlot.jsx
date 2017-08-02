@@ -2,8 +2,7 @@ import React from "react"
 import PropTypes from "prop-types"
 import {Motion, spring} from "react-motion"
 import Distribution from "./Distribution.js"
-import {Resize, Tooltip} from "replot-core"
-import Axis from "../../replot-core/src/Axis.jsx"
+import {Resize, Tooltip, Axis} from "replot-core"
 
 
 class Plot extends React.Component {
@@ -127,7 +126,9 @@ class Plot extends React.Component {
   }
 
   componentDidMount(){
-    setTimeout(() => {this.setState({spread: true})}, 1500)
+    if (!this.state.spead){
+      setTimeout(() => {this.setState({spread: true})}, 1500)
+    }
   }
 
 }
@@ -230,10 +231,9 @@ class BoxPlot extends React.Component {
         xTitle={this.props.xTitle} showXAxisLine={this.props.showXAxisLine}
         showXLabels={this.props.showXLabels} labels={labels}
         axisStyle={this.props.axisStyle} xAxisMode="discrete" >
-        <PlotContainer width={this.props.width} height={this.props.height}
-          distributions={distributions} max={max} min={min} padding={padding}
-          color={this.colorPlot.bind(this)} style={this.props.graphStyle}
-          initialAnimation={this.props.initialAnimation}
+        <PlotContainer distributions={distributions} max={max} min={min}
+          padding={padding} color={this.colorPlot.bind(this)}
+          style={this.props.graphStyle} initialAnimation={this.props.initialAnimation}
           activateTooltip={this.activateTooltip.bind(this)}
           deactivateTooltip={this.deactivateTooltip.bind(this)}/>
       </Axis>
@@ -330,6 +330,7 @@ BoxPlotResponsive.defaultProps = {
 
 BoxPlot.propTypes = {
   data: PropTypes.array.isRequired,
+  weightKey: PropTypes.string,
   width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   height: PropTypes.number,
   color: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
@@ -344,6 +345,8 @@ BoxPlot.propTypes = {
   showGrid: PropTypes.bool,
   initialAnimation: PropTypes.bool,
   tooltip: PropTypes.bool,
+  tooltipColor: PropTypes.string,
+  tooltipContents: PropTypes.func,
   graphStyle: PropTypes.object,
   axisStyle: PropTypes.object
 }
