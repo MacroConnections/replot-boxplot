@@ -17,16 +17,16 @@ class Plot extends React.Component {
 
   calculatePositions(){
     let positions = {}
-    positions.maxY = this.props.buffer+((this.props.max+this.props.padding-this.props.distribution.max)*this.props.unit)
-    positions.q4Y1 = this.props.buffer+((this.props.max+this.props.padding-this.props.distribution.max)*this.props.unit)
-    positions.q4Y2 = this.props.buffer+((this.props.max+this.props.padding-this.props.distribution.q3)*this.props.unit)
-    positions.rectY = this.props.buffer+((this.props.max+this.props.padding-this.props.distribution.q3)*this.props.unit)
+    positions.maxY = ((this.props.max+this.props.padding-this.props.distribution.max)*this.props.unit)
+    positions.q4Y1 = ((this.props.max+this.props.padding-this.props.distribution.max)*this.props.unit)
+    positions.q4Y2 = ((this.props.max+this.props.padding-this.props.distribution.q3)*this.props.unit)
+    positions.rectY = ((this.props.max+this.props.padding-this.props.distribution.q3)*this.props.unit)
     positions.rectHeight = ((this.props.max+this.props.padding-this.props.distribution.q1)*this.props.unit)-((this.props.max+this.props.padding-this.props.distribution.q3)*this.props.unit)
-    positions.medY = this.props.buffer+((this.props.max+this.props.padding-this.props.distribution.median)*this.props.unit)
-    positions.cY = this.props.buffer+((this.props.max+this.props.padding-this.props.distribution.mean)*this.props.unit)
-    positions.q0Y1 = this.props.buffer+((this.props.max+this.props.padding-this.props.distribution.q1)*this.props.unit)
-    positions.q0Y2 = this.props.buffer+((this.props.max+this.props.padding-this.props.distribution.min)*this.props.unit)
-    positions.minY = this.props.buffer+((this.props.max+this.props.padding-this.props.distribution.min)*this.props.unit)
+    positions.medY = ((this.props.max+this.props.padding-this.props.distribution.median)*this.props.unit)
+    positions.cY = ((this.props.max+this.props.padding-this.props.distribution.mean)*this.props.unit)
+    positions.q0Y1 = ((this.props.max+this.props.padding-this.props.distribution.q1)*this.props.unit)
+    positions.q0Y2 = ((this.props.max+this.props.padding-this.props.distribution.min)*this.props.unit)
+    positions.minY = ((this.props.max+this.props.padding-this.props.distribution.min)*this.props.unit)
     return positions
   }
 
@@ -132,6 +132,35 @@ class Plot extends React.Component {
 
 }
 
+class PlotContainer extends React.Component {
+
+  render() {
+    let plots = []
+    let unit = (this.props.height) / ((this.props.max+this.props.padding) - (this.props.min-this.props.padding))
+
+    let plotWidth = (this.props.width)/this.props.distributions.length/2
+
+    for (let i = 0; i < this.props.distributions.length; i++){
+      plots.push(
+        <Plot key={"plot"+i} distribution={this.props.distributions[i]} width={plotWidth}
+          offset={(this.props.width)/this.props.distributions.length/2 + i*((this.props.width)/this.props.distributions.length)}
+          max={this.props.max} min={this.props.min} unit={unit}
+          padding={this.props.padding} index={i} color={this.props.color}
+          style={this.props.style}
+          initialAnimation={this.props.initialAnimation}
+          activateTooltip={this.props.activateTooltip}
+          deactivateTooltip={this.props.deactivateTooltip}/>
+      )
+    }
+
+    return(
+      <g>
+        {plots}
+      </g>
+    )
+  }
+}
+
 class BoxPlot extends React.Component {
 
   constructor(){
@@ -189,17 +218,10 @@ class BoxPlot extends React.Component {
   }
 
   draw(distributions, min, max, labels){
-    let axes = []
-    let plots = []
+    let graph
     let padding = (max-min) / 3
-    let buffer = {
-      left: (this.props.yTitle ? 75 : 50),
-      top: (this.props.graphTitle ? 30 : 5),
-      bot: (this.props.xTitle ? 50 : 25)
-    }
-    let unit = (this.props.height-buffer.bot-buffer.top) / ((max+padding) - (min-padding))
 
-    axes.push(
+    graph = (
       <Axis key="axis" graphTitle={this.props.graphTitle} width={this.props.width}
         height={this.props.height} minY={min-padding} maxY={max+padding}
         ySteps={this.props.ySteps} yTitle={this.props.yTitle}
@@ -207,25 +229,17 @@ class BoxPlot extends React.Component {
         showYLabels={this.props.showYLabels} showGrid={this.props.showGrid}
         xTitle={this.props.xTitle} showXAxisLine={this.props.showXAxisLine}
         showXLabels={this.props.showXLabels} labels={labels}
-        axisStyle={this.props.axisStyle} xAxisMode="discrete" />
-    )
-
-    let plotWidth = (this.props.width-buffer.left)/distributions.length/2
-    for (let i = 0; i < distributions.length; i++){
-      plots.push(
-        <Plot key={"plot"+i} distribution={distributions[i]} width={plotWidth}
-          offset={buffer.left + (this.props.width-buffer.left)/distributions.length/2 + i*((this.props.width-buffer.left)/distributions.length)}
-          buffer={buffer.top} max={max} min={min} unit={unit}
-          padding={padding} index={i} color={this.colorPlot.bind(this)}
-          style={this.props.graphStyle}
+        axisStyle={this.props.axisStyle} xAxisMode="discrete" >
+        <PlotContainer width={this.props.width} height={this.props.height}
+          distributions={distributions} max={max} min={min} padding={padding}
+          color={this.colorPlot.bind(this)} style={this.props.graphStyle}
           initialAnimation={this.props.initialAnimation}
           activateTooltip={this.activateTooltip.bind(this)}
           deactivateTooltip={this.deactivateTooltip.bind(this)}/>
-      )
-    }
+      </Axis>
+    )
 
-    let series = axes.concat(plots)
-    return series
+    return graph
   }
 
   render() {
