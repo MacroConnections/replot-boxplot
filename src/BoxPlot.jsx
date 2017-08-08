@@ -103,10 +103,10 @@ class Plot extends React.Component {
             <rect x={-this.props.width/2 + this.props.offset} y={interpolatingStyle.rectY}
               width={this.props.width} height={interpolatingStyle.rectHeight}
               stroke={this.props.color(this.props.index, this.props.distribution.group)}
-              fill="#f5f5f5" strokeWidth={this.props.style.lineWidth}/>
+              fill={this.props.style.fill} strokeWidth={this.props.style.lineWidth}/>
             <circle cx={this.props.offset} cy={interpolatingStyle.cY} r={3}
               stroke={this.props.color(this.props.index, this.props.distribution.group)}
-              fill="#f5f5f5" strokeWidth={this.props.style.lineWidth} />
+              fill={this.props.style.fill} strokeWidth={this.props.style.lineWidth} />
             <line x1={-this.props.width/2 + this.props.offset} y1={interpolatingStyle.medY}
               x2={this.props.width/2 + this.props.offset} y2={interpolatingStyle.medY}
               stroke={this.props.color(this.props.index, this.props.distribution.group)}
@@ -312,7 +312,8 @@ BoxPlot.defaultProps = {
   showGrid: true,
   initialAnimation: true,
   graphStyle: {
-    lineWidth: 3
+    lineWidth: 3,
+    fill: "rgba(245,245,245,.1)"
   },
   axisStyle: {
     axisColor: "#000000",
