@@ -77,7 +77,7 @@ render() {
 Dimensions may be specified by passing in `width` and `height` props. The
 unit is pixels, and the BoxPlot defaults to 400 by 400 pixels.
 
-The BoxPlot will not function with a width that is less than 50 pixels, or with
+The BoxPlot will not function with a width that is less than 60 pixels, or with
 a height that is less than 30 pixels.
 
 ### Colors
@@ -91,7 +91,7 @@ This is done by passing in an array of color strings to the component with the
 `color` prop. The displayed boxplots will cycle through the provided colors.
 
 #### User-provided Color function
-The user can specify the color for a certain distribution by provided a function
+The user can specify the color for a certain distribution by providing a function
 as well. One can expect to receive the index of the plot (plot on the left has index
 0, next plot has index 1, and so on), as well as the groupKey associated with
 the plot, if there is one. In the example below, color is decided based on the
@@ -155,6 +155,20 @@ render() {
   )
 }
 ```
+
+### Graph Style
+The BoxPlot offers some customization with regards to the actual graph elements.
+These can be controlled with a `graphStyle` prop that is passed in as a javascript
+object. Keys to include can be the following:
+
+* lineWidth
+	* Determines the thickness of the lines drawn on the LineChart
+	* Defaults to `2.5`
+	* Accepts any number value
+* fill
+  * Determines the fill of the BoxPlot's rectangle
+  * Defaults to "rgba(245,245,245,.1)"
+  * Accepts any color string
 
 ### Axis Customization
 Replot BoxPlots allow for incredible customization of the graph axis. A complete

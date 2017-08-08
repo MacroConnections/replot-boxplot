@@ -945,10 +945,10 @@ var Plot = function (_React$Component) {
             _react2.default.createElement("rect", { x: -_this2.props.width / 2 + _this2.props.offset, y: interpolatingStyle.rectY,
               width: _this2.props.width, height: interpolatingStyle.rectHeight,
               stroke: _this2.props.color(_this2.props.index, _this2.props.distribution.group),
-              fill: "#f5f5f5", strokeWidth: _this2.props.style.lineWidth }),
+              fill: _this2.props.style.fill, strokeWidth: _this2.props.style.lineWidth }),
             _react2.default.createElement("circle", { cx: _this2.props.offset, cy: interpolatingStyle.cY, r: 3,
               stroke: _this2.props.color(_this2.props.index, _this2.props.distribution.group),
-              fill: "#f5f5f5", strokeWidth: _this2.props.style.lineWidth }),
+              fill: _this2.props.style.fill, strokeWidth: _this2.props.style.lineWidth }),
             _react2.default.createElement("line", { x1: -_this2.props.width / 2 + _this2.props.offset, y1: interpolatingStyle.medY,
               x2: _this2.props.width / 2 + _this2.props.offset, y2: interpolatingStyle.medY,
               stroke: _this2.props.color(_this2.props.index, _this2.props.distribution.group),
@@ -1255,7 +1255,8 @@ BoxPlot.defaultProps = {
   showGrid: true,
   initialAnimation: true,
   graphStyle: {
-    lineWidth: 3
+    lineWidth: 3,
+    fill: "rgba(245,245,245,.1)"
   },
   axisStyle: {
     axisColor: "#000000",
