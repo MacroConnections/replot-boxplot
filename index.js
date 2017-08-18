@@ -851,17 +851,22 @@ var Plot = function (_React$Component) {
   _createClass(Plot, [{
     key: "calculatePositions",
     value: function calculatePositions() {
+      var trueMax = this.props.max + this.props.padding;
       var positions = {};
-      positions.maxY = (this.props.max + this.props.padding - this.props.distribution.max) * this.props.unit;
-      positions.q4Y1 = (this.props.max + this.props.padding - this.props.distribution.max) * this.props.unit;
-      positions.q4Y2 = (this.props.max + this.props.padding - this.props.distribution.q3) * this.props.unit;
-      positions.rectY = (this.props.max + this.props.padding - this.props.distribution.q3) * this.props.unit;
-      positions.rectHeight = (this.props.max + this.props.padding - this.props.distribution.q1) * this.props.unit - (this.props.max + this.props.padding - this.props.distribution.q3) * this.props.unit;
-      positions.medY = (this.props.max + this.props.padding - this.props.distribution.median) * this.props.unit;
-      positions.cY = (this.props.max + this.props.padding - this.props.distribution.mean) * this.props.unit;
-      positions.q0Y1 = (this.props.max + this.props.padding - this.props.distribution.q1) * this.props.unit;
-      positions.q0Y2 = (this.props.max + this.props.padding - this.props.distribution.min) * this.props.unit;
-      positions.minY = (this.props.max + this.props.padding - this.props.distribution.min) * this.props.unit;
+      positions.maxY = (trueMax - this.props.distribution.max) * this.props.unit;
+      positions.q4Y1 = (trueMax - this.props.distribution.max) * this.props.unit;
+      positions.q4Y2 = (trueMax - this.props.distribution.q3) * this.props.unit;
+      positions.rectY = (trueMax - this.props.distribution.q3) * this.props.unit;
+      positions.rectHeight = (trueMax - this.props.distribution.q1) * this.props.unit - (trueMax - this.props.distribution.q3) * this.props.unit;
+      positions.medY = (trueMax - this.props.distribution.median) * this.props.unit;
+      positions.cY = (trueMax - this.props.distribution.mean) * this.props.unit;
+      positions.q0Y1 = (trueMax - this.props.distribution.q1) * this.props.unit;
+      positions.q0Y2 = (trueMax - this.props.distribution.min) * this.props.unit;
+      positions.minY = (trueMax - this.props.distribution.min) * this.props.unit;
+      positions.outliers = [];
+      for (var i = 0; i < this.props.distribution.outliers.length; i++) {
+        positions.outliers.push((trueMax - this.props.distribution.outliers[i]) * this.props.unit);
+      }
       return positions;
     }
   }, {
@@ -912,6 +917,15 @@ var Plot = function (_React$Component) {
         };
       }
 
+      var outliers = [];
+      for (var i = 0; i < this.props.distribution.outliers.length; i++) {
+        outliers.push(_react2.default.createElement("circle", { key: "outlier" + i,
+          cx: this.props.offset, cy: positions.outliers[i], r: 3,
+          fill: this.props.color(this.props.index, this.props.distribution.group),
+          onMouseOver: this.props.activateTooltip.bind(this, this.props.distribution.data, this.props.distribution.summary, true, this.props.distribution.outliers[i]),
+          onMouseOut: this.props.deactivateTooltip }));
+      }
+
       return _react2.default.createElement(
         _reactMotion.Motion,
         {
@@ -932,35 +946,44 @@ var Plot = function (_React$Component) {
         function (interpolatingStyle) {
           return _react2.default.createElement(
             "g",
-            { onMouseOver: _this2.props.activateTooltip.bind(_this2, _this2.props.distribution.data, _this2.props.distribution.summary),
-              onMouseOut: _this2.props.deactivateTooltip.bind(_this2) },
-            _react2.default.createElement("line", { x1: -_this2.props.width / 4 + _this2.props.offset, y1: interpolatingStyle.maxY,
-              x2: _this2.props.width / 4 + _this2.props.offset, y2: interpolatingStyle.maxY,
-              stroke: _this2.props.color(_this2.props.index, _this2.props.distribution.group),
-              strokeWidth: _this2.props.style.lineWidth }),
-            _react2.default.createElement("line", { x1: _this2.props.offset, y1: interpolatingStyle.q4Y1,
-              x2: _this2.props.offset, y2: interpolatingStyle.q4Y2,
-              stroke: _this2.props.color(_this2.props.index, _this2.props.distribution.group),
-              strokeWidth: _this2.props.style.lineWidth }),
-            _react2.default.createElement("rect", { x: -_this2.props.width / 2 + _this2.props.offset, y: interpolatingStyle.rectY,
-              width: _this2.props.width, height: interpolatingStyle.rectHeight,
-              stroke: _this2.props.color(_this2.props.index, _this2.props.distribution.group),
-              fill: _this2.props.style.fill, strokeWidth: _this2.props.style.lineWidth }),
-            _react2.default.createElement("circle", { cx: _this2.props.offset, cy: interpolatingStyle.cY, r: 3,
-              stroke: _this2.props.color(_this2.props.index, _this2.props.distribution.group),
-              fill: _this2.props.style.fill, strokeWidth: _this2.props.style.lineWidth }),
-            _react2.default.createElement("line", { x1: -_this2.props.width / 2 + _this2.props.offset, y1: interpolatingStyle.medY,
-              x2: _this2.props.width / 2 + _this2.props.offset, y2: interpolatingStyle.medY,
-              stroke: _this2.props.color(_this2.props.index, _this2.props.distribution.group),
-              strokeWidth: _this2.props.style.lineWidth }),
-            _react2.default.createElement("line", { x1: _this2.props.offset, y1: interpolatingStyle.q0Y1,
-              x2: _this2.props.offset, y2: interpolatingStyle.q0Y2,
-              stroke: _this2.props.color(_this2.props.index, _this2.props.distribution.group),
-              strokeWidth: _this2.props.style.lineWidth }),
-            _react2.default.createElement("line", { x1: -_this2.props.width / 4 + _this2.props.offset, y1: interpolatingStyle.minY,
-              x2: _this2.props.width / 4 + _this2.props.offset, y2: interpolatingStyle.minY,
-              stroke: _this2.props.color(_this2.props.index, _this2.props.distribution.group),
-              strokeWidth: _this2.props.style.lineWidth })
+            null,
+            _react2.default.createElement(
+              "g",
+              { onMouseOver: _this2.props.activateTooltip.bind(_this2, _this2.props.distribution.data, _this2.props.distribution.summary),
+                onMouseOut: _this2.props.deactivateTooltip.bind(_this2) },
+              _react2.default.createElement("line", { x1: -_this2.props.width / 4 + _this2.props.offset, y1: interpolatingStyle.maxY,
+                x2: _this2.props.width / 4 + _this2.props.offset, y2: interpolatingStyle.maxY,
+                stroke: _this2.props.color(_this2.props.index, _this2.props.distribution.group),
+                strokeWidth: _this2.props.style.lineWidth }),
+              _react2.default.createElement("line", { x1: _this2.props.offset, y1: interpolatingStyle.q4Y1,
+                x2: _this2.props.offset, y2: interpolatingStyle.q4Y2,
+                stroke: _this2.props.color(_this2.props.index, _this2.props.distribution.group),
+                strokeWidth: _this2.props.style.lineWidth }),
+              _react2.default.createElement("rect", { x: -_this2.props.width / 2 + _this2.props.offset, y: interpolatingStyle.rectY,
+                width: _this2.props.width, height: interpolatingStyle.rectHeight,
+                stroke: _this2.props.color(_this2.props.index, _this2.props.distribution.group),
+                fill: _this2.props.style.fill, strokeWidth: _this2.props.style.lineWidth }),
+              _react2.default.createElement("circle", { cx: _this2.props.offset, cy: interpolatingStyle.cY, r: 3,
+                stroke: _this2.props.color(_this2.props.index, _this2.props.distribution.group),
+                fill: _this2.props.style.fill, strokeWidth: _this2.props.style.lineWidth }),
+              _react2.default.createElement("line", { x1: -_this2.props.width / 2 + _this2.props.offset, y1: interpolatingStyle.medY,
+                x2: _this2.props.width / 2 + _this2.props.offset, y2: interpolatingStyle.medY,
+                stroke: _this2.props.color(_this2.props.index, _this2.props.distribution.group),
+                strokeWidth: _this2.props.style.lineWidth }),
+              _react2.default.createElement("line", { x1: _this2.props.offset, y1: interpolatingStyle.q0Y1,
+                x2: _this2.props.offset, y2: interpolatingStyle.q0Y2,
+                stroke: _this2.props.color(_this2.props.index, _this2.props.distribution.group),
+                strokeWidth: _this2.props.style.lineWidth }),
+              _react2.default.createElement("line", { x1: -_this2.props.width / 4 + _this2.props.offset, y1: interpolatingStyle.minY,
+                x2: _this2.props.width / 4 + _this2.props.offset, y2: interpolatingStyle.minY,
+                stroke: _this2.props.color(_this2.props.index, _this2.props.distribution.group),
+                strokeWidth: _this2.props.style.lineWidth })
+            ),
+            _react2.default.createElement(
+              "g",
+              null,
+              outliers
+            )
           );
         }
       );
@@ -1039,57 +1062,77 @@ var BoxPlot = function (_React$Component3) {
 
   _createClass(BoxPlot, [{
     key: "activateTooltip",
-    value: function activateTooltip(distribution, summary) {
+    value: function activateTooltip(distribution, summary, outlier, value) {
       var newContents = void 0;
       if (this.props.tooltipContents) {
         newContents = this.props.tooltipContents(distribution, summary);
       } else {
-        newContents = _react2.default.createElement(
-          "div",
-          null,
-          _react2.default.createElement(
-            "span",
+        if (outlier === true) {
+          newContents = _react2.default.createElement(
+            "div",
             null,
-            "Max: ",
-            summary.max
-          ),
-          _react2.default.createElement("br", null),
-          _react2.default.createElement(
-            "span",
+            _react2.default.createElement(
+              "span",
+              null,
+              "Outlier"
+            ),
+            _react2.default.createElement("br", null),
+            _react2.default.createElement(
+              "span",
+              null,
+              "Value: ",
+              value
+            ),
+            _react2.default.createElement("br", null)
+          );
+        } else {
+          newContents = _react2.default.createElement(
+            "div",
             null,
-            "Q3: ",
-            summary.q3
-          ),
-          _react2.default.createElement("br", null),
-          _react2.default.createElement(
-            "span",
-            null,
-            "Median: ",
-            summary.median
-          ),
-          _react2.default.createElement("br", null),
-          _react2.default.createElement(
-            "span",
-            null,
-            "Mean: ",
-            summary.mean
-          ),
-          _react2.default.createElement("br", null),
-          _react2.default.createElement(
-            "span",
-            null,
-            "Q1: ",
-            summary.q1
-          ),
-          _react2.default.createElement("br", null),
-          _react2.default.createElement(
-            "span",
-            null,
-            "Min: ",
-            summary.min
-          ),
-          _react2.default.createElement("br", null)
-        );
+            _react2.default.createElement(
+              "span",
+              null,
+              "Max: ",
+              summary.max
+            ),
+            _react2.default.createElement("br", null),
+            _react2.default.createElement(
+              "span",
+              null,
+              "Q3: ",
+              summary.q3
+            ),
+            _react2.default.createElement("br", null),
+            _react2.default.createElement(
+              "span",
+              null,
+              "Median: ",
+              summary.median
+            ),
+            _react2.default.createElement("br", null),
+            _react2.default.createElement(
+              "span",
+              null,
+              "Mean: ",
+              summary.mean
+            ),
+            _react2.default.createElement("br", null),
+            _react2.default.createElement(
+              "span",
+              null,
+              "Q1: ",
+              summary.q1
+            ),
+            _react2.default.createElement("br", null),
+            _react2.default.createElement(
+              "span",
+              null,
+              "Min: ",
+              summary.min
+            ),
+            _react2.default.createElement("br", null)
+          );
+        }
       }
       this.setState({
         tooltipContents: newContents,
@@ -1124,7 +1167,7 @@ var BoxPlot = function (_React$Component3) {
     key: "draw",
     value: function draw(distributions, min, max, labels) {
       var graph = void 0;
-      var padding = (max - min) / 3;
+      var padding = (max - min) / 5;
 
       graph = _react2.default.createElement(
         _replotCore.Axis,
@@ -1138,7 +1181,8 @@ var BoxPlot = function (_React$Component3) {
           axisStyle: this.props.axisStyle, xAxisMode: "discrete" },
         _react2.default.createElement(PlotContainer, { distributions: distributions, max: max, min: min,
           padding: padding, color: this.colorPlot.bind(this),
-          style: this.props.graphStyle, initialAnimation: this.props.initialAnimation,
+          style: this.props.graphStyle,
+          initialAnimation: this.props.initialAnimation,
           activateTooltip: this.activateTooltip.bind(this),
           deactivateTooltip: this.deactivateTooltip.bind(this) })
       );
@@ -1166,12 +1210,12 @@ var BoxPlot = function (_React$Component3) {
           for (var _iterator = unique[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var group = _step.value;
 
-            var d = new _Distribution2.default(this.props.data, this.props.weightKey, this.props.groupKey, group);
-            if (!max || d.max > max) {
-              max = d.max;
+            var d = new _Distribution2.default(this.props.data, this.props.weightKey, this.props.drawOutliersAsPoints, this.props.groupKey, group);
+            if (!max || d.data[d.data.length - 1] > max) {
+              max = d.data[d.data.length - 1];
             }
-            if (!min || d.min < min) {
-              min = d.min;
+            if (!min || d.data[0] < min) {
+              min = d.data[0];
             }
             distributions.push(d);
           }
@@ -1190,9 +1234,9 @@ var BoxPlot = function (_React$Component3) {
           }
         }
       } else {
-        var _d = new _Distribution2.default(this.props.data, this.props.weightKey);
-        max = _d.max;
-        min = _d.min;
+        var _d = new _Distribution2.default(this.props.data, this.props.weightKey, this.props.drawOutliersAsPoints);
+        max = _d.data[_d.data.length - 1];
+        min = _d.data[0];
         distributions.push(_d);
       }
 
@@ -1265,7 +1309,8 @@ BoxPlot.defaultProps = {
     gridColor: "#DDDDDD",
     lineWidth: 2,
     lineOpacity: 1
-  }
+  },
+  drawOutliersAsPoints: true
 };
 
 BoxPlotResponsive.defaultProps = {
@@ -1292,7 +1337,8 @@ BoxPlot.propTypes = {
   tooltipColor: _propTypes2.default.string,
   tooltipContents: _propTypes2.default.func,
   graphStyle: _propTypes2.default.object,
-  axisStyle: _propTypes2.default.object
+  axisStyle: _propTypes2.default.object,
+  drawOutliersAsPoints: _propTypes2.default.bool
 };
 
 exports.default = BoxPlotResponsive;
@@ -3334,8 +3380,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 class Distribution {
 
-  constructor(data, weightKey, groupKey, group) {
+  constructor(data, weightKey, drawOutliersAsPoints, groupKey, group) {
     this.data = []
+    this.outliers = []
     this.group = group
     for (let dataPoint of data) {
       if (groupKey && dataPoint[groupKey] === group){
@@ -3346,7 +3393,7 @@ class Distribution {
       }
     }
     this.data = this.data.sort((a,b) => a-b)
-    this.getSummary()
+    this.getSummary(drawOutliersAsPoints)
   }
 
   getMedian(data){
@@ -3371,13 +3418,38 @@ class Distribution {
     return total/data.length
   }
 
-  getSummary(){
-    this.min = this.data[0]
-    this.max = this.data[this.data.length-1]
+  getSummary(drawOutliersAsPoints){
     let quartiles = this.getQuartiles(this.data)
     this.q1 = quartiles.q1
     this.median = quartiles.med
     this.q3 = quartiles.q3
+
+    if (drawOutliersAsPoints) {
+      let iqr = this.q3 - this.q1
+      let threshold = 1.5 * iqr
+
+      for (let i = 0; i < this.data.length; i++) {
+        if (this.data[i] < this.q1 - threshold) {
+          this.outliers.push(this.data[i])
+        } else {
+          this.min = this.data[i]
+          break
+        }
+      }
+
+      for (let j = this.data.length-1; j >= 0; j--) {
+        if (this.data[j] > this.q3 + threshold) {
+          this.outliers.push(this.data[j])
+        } else {
+          this.max = this.data[j]
+          break
+        }
+      }
+    } else {
+      this.min = this.data[0]
+      this.max = this.data[this.data.length-1]
+    }
+
     this.mean = this.getMean(this.data)
     this.summary = {
       max: this.max,
@@ -3385,7 +3457,8 @@ class Distribution {
       median: this.median,
       mean: this.mean,
       q1: this.q1,
-      min: this.min
+      min: this.min,
+      outliers: this.outliers
     }
   }
 }

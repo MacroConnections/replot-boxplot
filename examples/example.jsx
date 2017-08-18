@@ -19,7 +19,7 @@ class ExampleApp extends React.Component {
         {gender: "female", score: 81},
         {gender: "female", score: 88},
         {gender: "female", score: 85},
-        {gender: "female", score: 94},
+        {gender: "female", score: 12},
         {gender: "male", score: 96},
         {gender: "male", score: 66},
         {gender: "male", score: 74},
