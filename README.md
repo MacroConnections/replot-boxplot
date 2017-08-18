@@ -73,6 +73,14 @@ render() {
 }
 ```
 
+### Outliers Customization
+Replot BoxPlots give you the choice in how to draw outliers. By default, outliers
+are calculated (as min - 1.5*IQR or max + 1.5*IQR), and drawn as points on the
+graph, separate from the main box and whiskers.
+
+If the user passes in a `showOutliersAsPoints` prop with a value of `false`, then
+the outliers will be drawn into the BoxPlot graph, not separate points.
+
 ### Dimensions
 Dimensions may be specified by passing in `width` and `height` props. The
 unit is pixels, and the BoxPlot defaults to 400 by 400 pixels.
@@ -131,7 +139,7 @@ render() {
 ```
 
 #### Customizing Tooltip contents
-By default, the tooltip will display the the five-number summary of a distribution
+By default, the tooltip will display the five-number summary of a distribution
 when hovering over the respective plot. The user can customize exactly what is
 displayed inside the tooltip by passing in a `tooltipContents` prop in the form
 of a Javascript function. The user can expect to receive the entire distribution
