@@ -346,7 +346,7 @@ BoxPlot.defaultProps = {
   initialAnimation: true,
   graphStyle: {
     lineWidth: 3,
-    fill: "rgba(245,245,245,.1)"
+    fill: "rgba(255,255,255,0)"
   },
   axisStyle: {
     axisColor: "#000000",
