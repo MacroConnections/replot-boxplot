@@ -1300,7 +1300,7 @@ BoxPlot.defaultProps = {
   initialAnimation: true,
   graphStyle: {
     lineWidth: 3,
-    fill: "rgba(245,245,245,.1)"
+    fill: "rgba(255,255,255,0)"
   },
   axisStyle: {
     axisColor: "#000000",
@@ -3545,7 +3545,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 20);
+/******/ 	return __webpack_require__(__webpack_require__.s = 21);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -3772,11 +3772,11 @@ if (process.env.NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(27)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(28)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(26)();
+  module.exports = __webpack_require__(27)();
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
@@ -3888,7 +3888,7 @@ module.exports = exports['default'];
 
 
 var React = __webpack_require__(1);
-var factory = __webpack_require__(21);
+var factory = __webpack_require__(22);
 
 if (typeof React === 'undefined') {
   throw Error(
@@ -3980,45 +3980,43 @@ var emptyFunction = __webpack_require__(6);
 var warning = emptyFunction;
 
 if (process.env.NODE_ENV !== 'production') {
-  (function () {
-    var printWarning = function printWarning(format) {
-      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
+  var printWarning = function printWarning(format) {
+    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    var argIndex = 0;
+    var message = 'Warning: ' + format.replace(/%s/g, function () {
+      return args[argIndex++];
+    });
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
+
+  warning = function warning(condition, format) {
+    if (format === undefined) {
+      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
+    }
+
+    if (format.indexOf('Failed Composite propType: ') === 0) {
+      return; // Ignore CompositeComponent proptype check.
+    }
+
+    if (!condition) {
+      for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+        args[_key2 - 2] = arguments[_key2];
       }
 
-      var argIndex = 0;
-      var message = 'Warning: ' + format.replace(/%s/g, function () {
-        return args[argIndex++];
-      });
-      if (typeof console !== 'undefined') {
-        console.error(message);
-      }
-      try {
-        // --- Welcome to debugging React ---
-        // This error was thrown as a convenience so that you can use this stack
-        // to find the callsite that caused this warning to fire.
-        throw new Error(message);
-      } catch (x) {}
-    };
-
-    warning = function warning(condition, format) {
-      if (format === undefined) {
-        throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
-      }
-
-      if (format.indexOf('Failed Composite propType: ') === 0) {
-        return; // Ignore CompositeComponent proptype check.
-      }
-
-      if (!condition) {
-        for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-          args[_key2 - 2] = arguments[_key2];
-        }
-
-        printWarning.apply(undefined, [format].concat(args));
-      }
-    };
-  })();
+      printWarning.apply(undefined, [format].concat(args));
+    }
+  };
 }
 
 module.exports = warning;
@@ -4088,7 +4086,7 @@ module.exports = ReactPropTypesSecret;
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {var now = __webpack_require__(28)
+/* WEBPACK VAR INJECTION */(function(global) {var now = __webpack_require__(29)
   , root = typeof window === 'undefined' ? global : window
   , vendors = ['moz', 'webkit']
   , suffix = 'AnimationFrame'
@@ -4161,7 +4159,7 @@ module.exports.polyfill = function() {
   root.cancelAnimationFrame = caf
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(36)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(37)))
 
 /***/ }),
 /* 11 */
@@ -4324,15 +4322,24 @@ var Legend = function (_React$Component) {
         })[0];
         var items = [];
         var size = 16;
+        if (titles.length > 12) {
+          size = 12;
+        }
+        if (titles.length > 15) {
+          size = 10;
+        }
         var buffer = { x: 5, y: 4 };
         if (this.props.mode === "flat") {
           var numColumns = Math.min(titles.length, Math.floor((this.props.width - buffer.x) / (size * 2 + longest.length * size / 2)));
+          if (!numColumns) {
+            numColumns = 1;
+          }
           var numRows = Math.ceil(titles.length / numColumns);
 
           for (var i = 0; i < titles.length; i++) {
             var title = titles[i];
             if (title) {
-              var x = buffer.x + i % numColumns * ((this.props.width - buffer.x - (size * 2 + longest.length * size / 2)) / (numColumns - 1));
+              var x = buffer.x + i % numColumns * ((this.props.width - buffer.x - (size * 2 + longest.length * size / 2)) / (numColumns - 1 <= 0 ? 1 : numColumns - 1));
               var y = buffer.y + Math.floor(i / numColumns) * 1.5 * size;
               items.push(_react2.default.createElement(
                 "g",
@@ -4353,8 +4360,8 @@ var Legend = function (_React$Component) {
           return _react2.default.createElement(
             "g",
             null,
-            _react2.default.createElement("rect", { x: 0, y: 0, width: this.props.width,
-              height: numRows * size * 1.5, fill: this.props.backgroundColor,
+            _react2.default.createElement("rect", { x: 0, y: 0, width: this.props.width <= 0 ? 0 : this.props.width,
+              height: numRows * size * 1.4 + 5 <= 0 ? 0 : numRows * size * 1.4 + 5, fill: this.props.backgroundColor,
               stroke: this.props.showBorder ? this.props.borderColor : "none",
               strokeWidth: 2 }),
             items
@@ -4389,7 +4396,7 @@ var Legend = function (_React$Component) {
           return _react2.default.createElement(
             "g",
             null,
-            _react2.default.createElement("rect", { x: 0, y: 0, width: size * 2 + longest.length * size / 2,
+            _react2.default.createElement("rect", { x: 0, y: 0, width: size * 2 + longest.length * size / 2 <= 0 ? 0 : size * 2 + longest.length * size / 2,
               height: this.props.height ? this.props.height : titles.length * size * 1.5,
               fill: this.props.backgroundColor, strokeWidth: 2,
               stroke: this.props.showBorder ? this.props.borderColor : "none" }),
@@ -4443,7 +4450,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactMotion = __webpack_require__(33);
+var _reactMotion = __webpack_require__(34);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4482,7 +4489,7 @@ var LoadingIcon = function (_React$Component) {
           defaultStyles: [{ r: style.r }, { r: style.r }, { r: style.r }],
           styles: function styles(prevInterpolatedStyles) {
             return prevInterpolatedStyles.map(function (_, i) {
-              return i === 0 ? { r: (0, _reactMotion.spring)(2 * style.r, { stiffness: 25, damping: 0 }) } : { r: (0, _reactMotion.spring)(prevInterpolatedStyles[i - 1].r) };
+              return i === 0 ? { r: (0, _reactMotion.spring)(0, { stiffness: 15, damping: 0, precision: 0.5 }) } : { r: (0, _reactMotion.spring)(prevInterpolatedStyles[i - 1].r) };
             });
           } },
         function (interpolatingStyles) {
@@ -4549,7 +4556,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _humanizePlus = __webpack_require__(23);
+var _humanizePlus = __webpack_require__(24);
 
 var _humanizePlus2 = _interopRequireDefault(_humanizePlus);
 
@@ -4619,7 +4626,11 @@ var YTickLabel = function (_React$Component2) {
     value: function render() {
       var printVal = void 0;
       if (this.props.value < 1 && this.props.value > -1) {
-        printVal = +this.props.value.toFixed(3);
+        if (this.props.yScale == "lin") {
+          printVal = +this.props.value.toFixed(3);
+        } else if (this.props.yScale == "log") {
+          printVal = +this.props.value.toFixed(5);
+        }
       } else if (this.props.value < 1000 && this.props.value > -1000) {
         printVal = +this.props.value.toFixed(1);
       } else {
@@ -4631,7 +4642,7 @@ var YTickLabel = function (_React$Component2) {
         null,
         _react2.default.createElement(
           "text",
-          { x: this.props.x, y: this.props.y + 7.5,
+          { x: this.props.x, y: this.props.y + 5,
             fontSize: 15, fill: this.props.color, textAnchor: "end" },
           printVal
         )
@@ -4712,9 +4723,15 @@ var YAxis = function (_React$Component4) {
 
         var yVal = 0;
         if (this.props.yScale == "log") {
-          var valueRatio = (Math.log10(this.props.maxY) - Math.log10(this.props.minY)) / (this.props.ySteps - 1);
-          var pow10 = Math.log10(this.props.minY) + i * valueRatio;
-          yVal = Math.pow(10, pow10);
+          if (this.props.minY === 0) {
+            var valueRatio = Math.log10(this.props.maxY) / (this.props.ySteps - 1);
+            var pow10 = i * valueRatio;
+            yVal = Math.pow(10, pow10);
+          } else {
+            var _valueRatio = (Math.log10(this.props.maxY) - Math.log10(this.props.minY)) / (this.props.ySteps - 1);
+            var _pow = Math.log10(this.props.minY) + i * _valueRatio;
+            yVal = Math.pow(10, _pow);
+          }
         } else {
           yVal = this.props.minY + i * (this.props.maxY - this.props.minY) / (this.props.ySteps - 1);
         }
@@ -4780,7 +4797,11 @@ var XTickLabel = function (_React$Component5) {
     value: function render() {
       var printVal = void 0;
       if (this.props.value < 1 && this.props.value > -1) {
-        printVal = +this.props.value.toFixed(3);
+        if (this.props.xScale == "lin") {
+          printVal = +this.props.value.toFixed(3);
+        } else if (this.props.xScale == "log") {
+          printVal = +this.props.value.toFixed(5);
+        }
       } else if (this.props.value < 1000 && this.props.value > -1000) {
         printVal = +this.props.value.toFixed(1);
       } else {
@@ -4860,7 +4881,7 @@ var XAxisContinuous = function (_React$Component7) {
         xAxis.push(_react2.default.createElement(
           "text",
           { key: "xTitle", textAnchor: "middle",
-            x: this.props.x + this.props.width / 2, y: this.props.y + 45,
+            x: this.props.x + this.props.width / 2, y: this.props.y + 65,
             fill: this.props.style.titleColor, fontSize: 18 },
           this.props.xTitle
         ));
@@ -4874,9 +4895,15 @@ var XAxisContinuous = function (_React$Component7) {
 
           var xVal = 0;
           if (this.props.xScale == "log") {
-            var valueRatio = (Math.log10(this.props.maxX) - Math.log10(this.props.minX)) / (this.props.xSteps - 1);
-            var pow10 = Math.log10(this.props.minX) + i * valueRatio;
-            xVal = Math.pow(10, pow10);
+            if (this.props.minX === 0) {
+              var valueRatio = Math.log10(this.props.maxX) / (this.props.xSteps - 1);
+              var pow10 = i * valueRatio;
+              xVal = Math.pow(10, pow10);
+            } else {
+              var _valueRatio2 = (Math.log10(this.props.maxX) - Math.log10(this.props.minX)) / (this.props.xSteps - 1);
+              var _pow2 = Math.log10(this.props.minX) + i * _valueRatio2;
+              xVal = Math.pow(10, _pow2);
+            }
           } else {
             xVal = this.props.minX + i * (this.props.maxX - this.props.minX) / (this.props.xSteps - 1);
           }
@@ -4958,13 +4985,23 @@ var XAxisDiscrete = function (_React$Component8) {
         }
 
         var offset = this.props.x + this.props.width / this.props.labels.length / 2;
+        var deltaX = this.props.width / this.props.labels.length;
+        if (this.props.xStart === "origin") {
+          offset = this.props.x;
+          deltaX = this.props.width / (this.props.labels.length - 1);
+        }
+
         for (var _i = 0; _i < this.props.labels.length; _i++) {
           rotation = "rotate(" + tilt + "," + (offset + _i * (this.props.width / this.props.labels.length) - 10) + "," + (this.props.y - 20) + ")";
+          xAxis.push(_react2.default.createElement(Line, { key: "tick" + _i,
+            x1: offset + _i * deltaX, y1: this.props.y,
+            x2: offset + _i * deltaX, y2: this.props.y + 8,
+            stroke: this.props.style.labelColor }));
           xAxis.push(_react2.default.createElement(
             "text",
             { key: this.props.labels[_i], fill: this.props.style.labelColor,
-              x: offset + _i * (this.props.width / this.props.labels.length),
-              y: this.props.y + 20, textAnchor: anchor, transform: rotation, fontSize: size },
+              x: offset + _i * deltaX,
+              y: this.props.y + 22, textAnchor: anchor, transform: rotation, fontSize: size },
             this.props.labels[_i]
           ));
         }
@@ -4974,7 +5011,7 @@ var XAxisDiscrete = function (_React$Component8) {
         xAxis.push(_react2.default.createElement(
           "text",
           { key: "xTitle", textAnchor: "middle",
-            x: this.props.x + this.props.width / 2, y: this.props.y + 45,
+            x: this.props.x + this.props.width / 2, y: this.props.y + 65,
             fill: this.props.style.titleColor, fontSize: size + 2 },
           this.props.xTitle
         ));
@@ -5021,8 +5058,8 @@ var Axis = function (_React$Component9) {
       this.axes = [];
       this.buffer = { top: 0, left: 0, bot: 0, right: 0 };
       if (this.props.showYAxis) {
-        this.buffer.top += 5;
-        this.buffer.left += 50;
+        this.buffer.top += 10;
+        this.buffer.left += 60;
         if (this.props.yTitle) {
           this.buffer.left += 25;
         }
@@ -5030,7 +5067,10 @@ var Axis = function (_React$Component9) {
       if (this.props.showXAxis) {
         this.buffer.bot += 25;
         if (this.props.xTitle) {
-          this.buffer.bot += 25;
+          this.buffer.bot += 45;
+        }
+        if (this.props.xStart === "origin") {
+          this.buffer.right += 25;
         }
       }
       if (this.props.graphTitle) {
@@ -5039,9 +5079,9 @@ var Axis = function (_React$Component9) {
       if (this.props.xAxisMode === "continuous") {
         this.buffer.right += 25;
       }
-      if (this.props.legendValues) {
+      if (this.props.showLegend && this.props.legendValues) {
         if (this.props.legendMode == "flat") {
-          this.buffer.bot += 60;
+          this.buffer.bot += 80;
         } else if (this.props.legendMode == "stack-outside") {
           this.buffer.right += 125;
         }
@@ -5074,7 +5114,7 @@ var Axis = function (_React$Component9) {
             width: this.props.width - this.buffer.left - this.buffer.right,
             xTitle: this.props.xTitle, showXAxisLine: this.props.showXAxisLine,
             showXLabels: this.props.showXLabels, labels: this.props.labels,
-            style: this.props.axisStyle }));
+            xStart: this.props.xStart, style: this.props.axisStyle }));
         } else if (this.props.xAxisMode == "continuous") {
           this.axes.push(_react2.default.createElement(XAxisContinuous, { key: "XAxis", x: this.buffer.left, y: this.props.height - this.buffer.bot,
             width: this.props.width - this.buffer.left - this.buffer.right,
@@ -5098,9 +5138,9 @@ var Axis = function (_React$Component9) {
         if (this.props.legendMode === "flat") {
           this.axes.push(_react2.default.createElement(
             "g",
-            { key: "Legend", transform: "translate(" + this.buffer.left + " " + (this.props.height - 50) + ")" },
+            { key: "Legend", transform: "translate(" + this.buffer.left + " " + (this.props.height - 75) + ")" },
             _react2.default.createElement(_Legend2.default, { values: this.props.legendValues,
-              width: this.props.width - this.buffer.left,
+              width: this.props.width - this.buffer.left - this.buffer.right,
               showLegend: this.props.showLegend,
               fontColor: this.props.legendStyle.fontColor,
               backgroundColor: this.props.legendStyle.backgroundColor,
@@ -5132,8 +5172,11 @@ var Axis = function (_React$Component9) {
         }
       }
 
-      var child = _react2.default.cloneElement(this.props.children, { width: this.props.width - this.buffer.left - this.buffer.right,
-        height: this.props.height - this.buffer.top - this.buffer.bot });
+      var child = void 0;
+      if (this.props.children) {
+        child = _react2.default.cloneElement(this.props.children, { width: this.props.width - this.buffer.left - this.buffer.right,
+          height: this.props.height - this.buffer.top - this.buffer.bot });
+      }
 
       return _react2.default.createElement(
         "g",
@@ -5199,6 +5242,7 @@ Axis.propTypes = {
   yTitle: _propTypes2.default.string,
   xScale: _propTypes2.default.string,
   xSteps: _propTypes2.default.number,
+  xStart: _propTypes2.default.string,
   yScale: _propTypes2.default.string,
   ySteps: _propTypes2.default.number,
   minY: _propTypes2.default.number,
@@ -5431,20 +5475,20 @@ var Tooltip = function (_React$Component) {
           coloring.backgroundColor = this.props.backgroundColor;
           coloring.borderColor = this.props.borderColor;
           coloring.fontColor = this.props.fontColor;
-          break;
       }
 
       var style = {
         outer: {
           zIndex: "1",
-          position: "absolute"
+          position: "absolute",
+          pointerEvents: "none"
         },
         inner: {
           display: "inline-block",
           position: "absolute",
           width: width,
           textAlign: "center",
-          padding: this.props.padding,
+          padding: "10px 0px",
           backgroundColor: coloring.backgroundColor,
           border: "1px solid",
           borderColor: coloring.borderColor,
@@ -5550,7 +5594,7 @@ var Tooltip = function (_React$Component) {
 
 Tooltip.defaultProps = {
   width: 200,
-  padding: 10,
+  padding: "10px 0px",
   backgroundColor: "#181818",
   fontColor: "#ffffff",
   borderColor: "#585858",
@@ -5562,6 +5606,82 @@ exports.default = Tooltip;
 
 /***/ }),
 /* 20 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Color_js__ = __webpack_require__(38);
+
+
+class ColorPalette {
+
+  constructor() {
+    this.palette = []
+    this.numcolors = 0
+  }
+
+  get(i) {
+    return this.palette[i]
+  }
+
+  copy() {
+    let cp = new ColorPalette()
+    cp.palette = [].concat(this.palette)
+    cp.numcolors = this.numcolors
+    return cp
+  }
+
+  addColors(listColors) {
+    this.palette = this.palette.concat(listColors)
+    this.numcolors += listColors.length
+  }
+
+  randomize() {
+    let curIndex = this.numcolors
+    let temp
+    let randomIndex
+
+    while (0 !== curIndex) {
+      randomIndex = Math.floor(Math.random() * curIndex)
+      curIndex -= 1
+
+      temp = this.palette[curIndex]
+      this.palette[curIndex] = this.palette[randomIndex]
+      this.palette[randomIndex] = temp
+    }
+  }
+
+  createPalette(color1, color2, numcolors) {
+    let dred = color2.red - color1.red
+    let dgreen = color2.green - color1.green
+    let dblue = color2.blue - color1.blue
+
+    let slopeRed = Math.abs(dred / 255)
+    let slopeGreen = Math.abs(dgreen / 255)
+    let slopeBlue = Math.abs(dblue / 255)
+
+    let end1 = color1.endpoint(slopeRed, slopeGreen, slopeBlue)
+    let end2 = color2.endpoint(slopeRed, slopeGreen, slopeBlue)
+
+    let palette = []
+    for (var i=0; i < numcolors; i++) {
+      let r = end1.red + i*(end2.red - end1.red)/numcolors
+      let g = end1.green + i*(end2.green - end1.green)/numcolors
+      let b = end1.blue + i*(end2.blue - end1.blue)/numcolors
+      let c = new __WEBPACK_IMPORTED_MODULE_0__Color_js__["a" /* default */](r,g,b)
+      palette.push(c)
+    }
+    this.numcolors = numcolors
+    this.palette = palette
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (ColorPalette);
+
+
+/***/ }),
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5570,7 +5690,7 @@ exports.default = Tooltip;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Axis = exports.Legend = exports.LoadingIcon = exports.Resize = exports.Tooltip = undefined;
+exports.ColorPalette = exports.Axis = exports.Legend = exports.LoadingIcon = exports.Resize = exports.Tooltip = undefined;
 
 var _Tooltip = __webpack_require__(19);
 
@@ -5592,6 +5712,10 @@ var _Axis = __webpack_require__(17);
 
 var _Axis2 = _interopRequireDefault(_Axis);
 
+var _ColorPalette = __webpack_require__(20);
+
+var _ColorPalette2 = _interopRequireDefault(_ColorPalette);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.Tooltip = _Tooltip2.default;
@@ -5599,9 +5723,10 @@ exports.Resize = _Resize2.default;
 exports.LoadingIcon = _LoadingIcon2.default;
 exports.Legend = _Legend2.default;
 exports.Axis = _Axis2.default;
+exports.ColorPalette = _ColorPalette2.default;
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5617,9 +5742,9 @@ exports.Axis = _Axis2.default;
 
 
 
-var _assign = __webpack_require__(24);
+var _assign = __webpack_require__(25);
 
-var emptyObject = __webpack_require__(22);
+var emptyObject = __webpack_require__(23);
 var _invariant = __webpack_require__(3);
 
 if (process.env.NODE_ENV !== 'production') {
@@ -6481,7 +6606,7 @@ module.exports = factory;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6507,7 +6632,7 @@ module.exports = emptyObject;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7047,7 +7172,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7144,7 +7269,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7213,7 +7338,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7279,7 +7404,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7299,7 +7424,7 @@ var invariant = __webpack_require__(3);
 var warning = __webpack_require__(7);
 
 var ReactPropTypesSecret = __webpack_require__(9);
-var checkPropTypes = __webpack_require__(25);
+var checkPropTypes = __webpack_require__(26);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -7799,7 +7924,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {// Generated by CoffeeScript 1.12.2
@@ -7842,7 +7967,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8095,7 +8220,7 @@ exports['default'] = Motion;
 module.exports = exports['default'];
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8369,7 +8494,7 @@ exports['default'] = StaggeredMotion;
 module.exports = exports['default'];
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8393,7 +8518,7 @@ var _stepper3 = __webpack_require__(13);
 
 var _stepper4 = _interopRequireDefault(_stepper3);
 
-var _mergeDiff = __webpack_require__(32);
+var _mergeDiff = __webpack_require__(33);
 
 var _mergeDiff2 = _interopRequireDefault(_mergeDiff);
 
@@ -8877,7 +9002,7 @@ module.exports = exports['default'];
 // that you've unmounted but that's still animating. This is where it lives
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8991,7 +9116,7 @@ module.exports = exports['default'];
 // to loop through and find a key's index each time), but I no longer care
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9001,19 +9126,19 @@ exports.__esModule = true;
 
 function _interopRequire(obj) { return obj && obj.__esModule ? obj['default'] : obj; }
 
-var _Motion = __webpack_require__(29);
+var _Motion = __webpack_require__(30);
 
 exports.Motion = _interopRequire(_Motion);
 
-var _StaggeredMotion = __webpack_require__(30);
+var _StaggeredMotion = __webpack_require__(31);
 
 exports.StaggeredMotion = _interopRequire(_StaggeredMotion);
 
-var _TransitionMotion = __webpack_require__(31);
+var _TransitionMotion = __webpack_require__(32);
 
 exports.TransitionMotion = _interopRequire(_TransitionMotion);
 
-var _spring = __webpack_require__(35);
+var _spring = __webpack_require__(36);
 
 exports.spring = _interopRequire(_spring);
 
@@ -9027,12 +9152,12 @@ exports.stripStyle = _interopRequire(_stripStyle);
 
 // deprecated, dummy warning function
 
-var _reorderKeys = __webpack_require__(34);
+var _reorderKeys = __webpack_require__(35);
 
 exports.reorderKeys = _interopRequire(_reorderKeys);
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9056,7 +9181,7 @@ module.exports = exports['default'];
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9085,7 +9210,7 @@ function spring(val, config) {
 module.exports = exports['default'];
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports) {
 
 var g;
@@ -9109,6 +9234,98 @@ try {
 // easier to handle this case. if(!global) { ...}
 
 module.exports = g;
+
+
+/***/ }),
+/* 38 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+function hexToR(h) {return parseInt((cutHex(h)).substring(0,2),16)}
+function hexToG(h) {return parseInt((cutHex(h)).substring(2,4),16)}
+function hexToB(h) {return parseInt((cutHex(h)).substring(4,6),16)}
+function cutHex(h) {return (h.charAt(0)=="#") ? h.substring(1,7):h}
+
+class Color {
+
+  constructor(red, green, blue) {
+    this.red = red
+    this.green = green
+    this.blue = blue
+  }
+
+  rgb() {
+    let str = "rgb("
+    str += String(Math.round(this.red)) + ","
+    str += String(Math.round(this.green)) + ","
+    str += String(Math.round(this.blue)) + ")"
+    return str
+  }
+
+  fromHex(hex) {
+    this.red = hexToR(hex)
+    this.green = hexToG(hex)
+    this.blue = hexToB(hex)
+  }
+
+  endpoint(slopeRed, slopeGreen, slopeBlue) {
+    let tredNeg = this.red / slopeRed
+    let tredPos = (255 - this.red) / slopeRed
+    if (slopeRed == 0) {
+      tredNeg = -1
+      tredPos = -1
+    }
+
+    let tgreenNeg = this.green / slopeGreen
+    let tgreenPos = (255 - this.green) / slopeGreen
+    if (slopeGreen == 0) {
+      tgreenNeg = -1
+      tgreenPos = -1
+    }
+
+    let tblueNeg = this.blue / slopeBlue
+    let tbluePos = (255 - this.blue) / slopeBlue
+    if (slopeBlue == 0) {
+      tblueNeg = -1
+      tbluePos = -1
+    }
+
+    let t = [tredNeg, tredPos, tgreenNeg, tgreenPos, tblueNeg, tbluePos]
+
+    let keys = []
+    for (var k=0; k < 6; k++) {
+      if (t[k] >= 0) {
+        keys.push(k)
+      }
+    }
+
+    if (keys.length == 0) {
+      return this
+    }
+
+    let tmin = t[keys[0]]
+    let tind = keys[0]
+    for (var ki=0; ki < keys.length; ki++) {
+      if (t[keys[ki]] < tmin) {
+        tind = keys[ki]
+        tmin = t[tind]
+      }
+    }
+
+    let sign = 1
+    if (tind % 2 == 0) {
+      sign = -1
+    }
+    let red = this.red + tmin * sign * slopeRed
+    let green = this.green + tmin * sign * slopeGreen
+    let blue = this.blue + tmin * sign * slopeBlue
+    let end = new Color(red, green, blue)
+    return end
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (Color);
 
 
 /***/ })
