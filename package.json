@@ -1,6 +1,6 @@
 {
   "name": "replot-boxplot",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Box plot component for React",
   "main": "index.js",
   "scripts": {
