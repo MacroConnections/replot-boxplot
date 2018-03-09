@@ -253,6 +253,33 @@ class BoxPlot extends React.Component {
   draw(distributions, min, max, labels){
     let graph
     let padding = (max-min) / 5
+    let graphStyle = {
+      lineWidth: this.props.lineWidth,
+      fill: this.props.boxFill
+    }
+    let axisStyle = {
+      titleColor: this.props.graphTitleColor,
+      titleFontSize: this.props.titleFontSize,
+      titleFontFamily: this.props.titleFontFamily,
+      labelColor: this.props.labelColor,
+      labelFontSize: this.props.labelFontSize,
+      labelFontFamily: this.props.labelFontFamily,
+      axisColor: this.props.axisColor,
+      lineWidth: this.props.axisWidth,
+      lineOpacity: this.props.axisOpacity,
+      gridColor: this.props.gridColor,
+      gridWidth: this.props.gridWidth,
+      gridOpacity: this.props.gridOpacity,
+      tickColor: this.props.tickColor,
+      tickWidth: this.props.tickWidth,
+      tickOpacity: this.props.tickOpacity,
+    }
+    let legendStyle = {
+      fontColor: this.props.legendFontColor,
+      backgroundColor: this.props.legendBackground,
+      showBorder: this.props.legendShowBorder,
+      borderColor: this.props.legendBorderColor,
+    }
 
     graph = (
       <Axis key="axis" graphTitle={this.props.graphTitle} width={this.props.width}
@@ -262,10 +289,10 @@ class BoxPlot extends React.Component {
         showYLabels={this.props.showYLabels} showGrid={this.props.showGrid}
         xTitle={this.props.xTitle} showXAxisLine={this.props.showXAxisLine}
         showXLabels={this.props.showXLabels} labels={labels}
-        axisStyle={this.props.axisStyle} xAxisMode="discrete" >
+        axisStyle={axisStyle} xAxisMode="discrete" legendStyle={legendStyle}>
         <PlotContainer distributions={distributions} max={max} min={min}
           padding={padding} color={this.colorPlot.bind(this)}
-          style={this.props.graphStyle}
+          style={graphStyle}
           initialAnimation={this.props.initialAnimation}
           activateTooltip={this.activateTooltip.bind(this)}
           deactivateTooltip={this.deactivateTooltip.bind(this)}/>
@@ -344,18 +371,11 @@ BoxPlot.defaultProps = {
   showYLabels: true,
   showGrid: true,
   initialAnimation: true,
-  graphStyle: {
-    lineWidth: 3,
-    fill: "rgba(255,255,255,0)"
-  },
-  axisStyle: {
-    axisColor: "#000000",
-    labelColor: "#000000",
-    titleColor: "#000000",
-    gridColor: "#DDDDDD",
-    lineWidth: 2,
-    lineOpacity: 1
-  },
+  showLegend: false,
+  lineWidth: 3,
+  boxFill: "rgba(255,255,255,0)",
+  legendBackground: "none",
+  legendShowBorder: false,
   drawOutliersAsPoints: true
 }
 
@@ -382,9 +402,33 @@ BoxPlot.propTypes = {
   tooltip: PropTypes.bool,
   tooltipColor: PropTypes.string,
   tooltipContents: PropTypes.func,
-  graphStyle: PropTypes.object,
-  axisStyle: PropTypes.object,
-  drawOutliersAsPoints: PropTypes.bool
+  drawOutliersAsPoints: PropTypes.bool,
+
+  axisColor: PropTypes.string,
+  axisWidth: PropTypes.number,
+  axisOpacity: PropTypes.number,
+
+  gridColor: PropTypes.string,
+  gridWidth: PropTypes.number,
+  gridOpacity: PropTypes.number,
+
+  tickColor: PropTypes.string,
+  tickWidth: PropTypes.number,
+  tickOpacity: PropTypes.number,
+
+  labelColor: PropTypes.string,
+  labelFontSize: PropTypes.number,
+  labelFontType: PropTypes.number,
+
+  showLegend: PropTypes.bool,
+  legendFontColor: PropTypes.string,
+  legendBackground: PropTypes.string,
+  legendShowBorder: PropTypes.bool,
+  legendBorderColor: PropTypes.string,
+
+  graphTitleColor: PropTypes.string,
+  graphTitleFontSize: PropTypes.number,
+  graphTitleFontType: PropTypes.number,
 }
 
 export default BoxPlotResponsive

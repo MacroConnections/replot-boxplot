@@ -4,8 +4,8 @@
   "description": "Box plot component for React",
   "main": "index.js",
   "scripts": {
-  	  "watch": "cd examples && webpack --watch",
-  	  "compile": "webpack --output-filename index.js"
+    "watch": "cd examples && webpack --watch",
+    "compile": "webpack --output-filename index.js"
   },
   "repository": {
     "type": "git",
