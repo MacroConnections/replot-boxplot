@@ -15,11 +15,10 @@ modules, use as you would anything else.
 import BoxPlot from 'replot-boxplot'
 ```
 
-## API
+## Quick Start
 replot-boxplot is designed to easily create boxplots.
 The only *required* input is properly formatted data.
 
-### Basic Usage
 In the simplest case, just supply data (as a Javascript array) and specify the
 key for the values -:
 
@@ -47,7 +46,7 @@ render() {
 - `data` is the only required prop
 - `weightKey` defaults to `"weight"`
 
-#### Multiple distributions
+### Multiple distributions
 Replot BoxPlots support displaying multiple boxplots from one data set. In this
 case, one must only specify a `groupKey` prop with which to group the data.
 
@@ -72,6 +71,8 @@ render() {
   )
 }
 ```
+
+## API
 
 ### Outliers Customization
 Replot BoxPlots give you the choice in how to draw outliers. By default, outliers
